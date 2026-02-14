@@ -9,6 +9,16 @@ base {
 }
 
 repositories {
+    // 阿里云镜像
+    maven {
+        name = "AliyunPublic"
+        url = uri("https://maven.aliyun.com/repository/public")
+    }
+    maven {
+        name = "AliyunGoogle"
+        url = uri("https://maven.aliyun.com/repository/google")
+    }
+    
     maven {
         name = "meteor-maven"
         url = uri("https://maven.meteordev.org/releases")
