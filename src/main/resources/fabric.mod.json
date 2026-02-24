@@ -8,8 +8,10 @@
     "kono_yalu"
   ],
   "contact": {
-    "sources": "https://github.com/dingzhen-vape/meteor-addon-Translate"
+    "sources": "https://github.com/dingzhen-vape/Meteor-I18n-Support-plugin",
+    "issues": "https://github.com/dingzhen-vape/Meteor-I18n-Support-plugin/issues"
   },
+  "license": "CC0-1.0",
   "icon": "assets/yalu/icon.png",
   "environment": "client",
   "entrypoints": {
