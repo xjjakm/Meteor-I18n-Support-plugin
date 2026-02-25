@@ -31,12 +31,14 @@
 
 ### 鸣谢
 我
-AI
-Meteor开发者
-Wurst客户端提供语言文件I18n支持思路
 
-EN Version:
-# Meteor I18n Support  
+AI
+
+Meteor开发者
+
+Wurst客户端提供语言文件I18n支持思路 
+
+# [EN Version] Meteor I18n Support  
 #### This plugin adds lang file support to the Meteor client, enabling non-hardcoded modifications for most text content  
 ### How to use  
 Use it alongside the Meteor client by placing it in the mods folder like any other plugin.  
