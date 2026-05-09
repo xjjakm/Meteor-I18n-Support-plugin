@@ -18,7 +18,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: 21
+          java-version: 25
 
       - name: Build with Gradle
         run: ./gradlew build
@@ -29,6 +29,6 @@ jobs:
           repo_token: '${{ secrets.GITHUB_TOKEN }}'
           automatic_release_tag: snapshot
           prerelease: true
-          title: 1.21.11-3
+          title: 26.1-beta.1
           files: |
             ./build/libs/*.jar
