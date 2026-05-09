@@ -21,7 +21,7 @@ repositories {
 
     maven {
         name = "meteor-maven"
-        url = uri("https://maven.meteordev.org/snapshots")
+        url = uri("https://maven.meteordev.org/releases")
     }
     maven {
         name = "meteor-maven-snapshots"
