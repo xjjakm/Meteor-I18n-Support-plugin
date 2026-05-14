@@ -38,6 +38,7 @@ dependencies {
     // Fabric
     minecraft("com.mojang:minecraft:${properties["minecraft_version"] as String}")
     implementation("net.fabricmc:fabric-loader:${properties["loader_version"] as String}")
+    implementation("net.fabricmc.fabric-api:fabric-api:${properties["fabric_api_version"] as String}")
 
     // Meteor
     implementation("meteordevelopment:meteor-client:${properties["minecraft_version"] as String}-SNAPSHOT")
