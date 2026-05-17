@@ -4,10 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resource.Resource;
-import net.minecraft.resource.ResourceManager;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Language;
+import net.minecraft.locale.Language;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -54,8 +54,7 @@ public class Translator {
     private Iterable<String> getCurrentLangCodes() {
         // Weird bug: Some users have their language set to "en_US" instead of
         // "en_us.json" for some reason. Last seen in 1.21.
-        String mainLangCode = Minecraft.getInstance().getLanguageManager()
-            .getLanguage().toLowerCase();
+        String mainLangCode = Minecraft.getInstance().getLanguageManager().getSelected().toLowerCase();
 
         ArrayList<String> langCodes = new ArrayList<>();
         langCodes.add("en_us.json");
@@ -77,15 +76,15 @@ public class Translator {
             //注册语言ID
             Identifier langId = Identifier.fromNamespaceAndPath("yalu", langFilePath);
 
-            for(Resource resource : manager.getAllResources(langId))
-                try(InputStream stream = resource.getInputStream())
+            for(Resource resource : manager.getResourceStack(langId))
+                try(InputStream stream = resource.open())
                 {
-                    Language.load(stream, entryConsumer);
+                    Language.loadFromJson(stream, entryConsumer);
 
                 }catch(IOException e)
                 {
                     System.out.println("Failed to load translations for "
-                        + langCode + " from pack " + resource.getPackId());
+                        + langCode + " from pack " + resource.sourcePackId());
                     e.printStackTrace();
                 }
         }
