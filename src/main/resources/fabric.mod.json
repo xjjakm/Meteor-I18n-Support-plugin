@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "addon-template",
-  "version": "26.1.x.beta",
+  "version": "26.1.x-1",
   "name": "Meteor I18n Support",
   "description": "为Meteor添加国际化支持",
   "authors": [
@@ -29,7 +29,7 @@
   },
   "depends": {
     "java": ">=25",
-    "minecraft": ["${mc_version}"],
+    "minecraft": ">=26.1",
     "meteor-client": "*"
   }
 }
