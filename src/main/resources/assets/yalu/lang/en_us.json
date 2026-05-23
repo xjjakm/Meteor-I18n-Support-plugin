@@ -2219,8 +2219,8 @@
   "Setting.Meteor.border.Description": "How much space to add around the text.",
   "Setting.Meteor.snapping-range": "snapping-range",
   "Setting.Meteor.snapping-range.Description": "Snapping range in editor.",
-  "Module.Meteor.关于汉化插件": "关于汉化插件",
-  "Module.Meteor.关于汉化插件.Description": "插件作者|译者：食我压路",
+  "Module.Meteor.关于汉化插件": "About the translation plugin",
+  "Module.Meteor.关于汉化插件.Description": "Plugin Author | Translator: yalu",
   "Setting.Meteor.update-delay": "update-delay",
   "Setting.Meteor.update-delay.Description": "Update delay in ticks",
   "Setting.Meteor.shadow": "shadow",
@@ -2452,5 +2452,11 @@
   "Setting.Meteor.prune-by-latency": "prune-by-latency",
   "Setting.Meteor.prune-by-latency.Description": "Prune proxies at or above this latency in ms. 0 to disable.",
   "Setting.Meteor.prune-to-count": "prune-to-count",
-  "Setting.Meteor.prune-to-count.Description": "If in excess, prune the number of proxies to this count. 0 to disable. Prioritises by latency."
+  "Setting.Meteor.prune-to-count.Description": "If in excess, prune the number of proxies to this count. 0 to disable. Prioritises by latency.",
+  "Module.Meteor.weather-changer": "weather-changer",
+  "Module.Meteor.weather-changer.Description": "Allows you to override the world's current weather.",
+  "Setting.Meteor.rain-level": "rain-level",
+  "Setting.Meteor.rain-level.Description": "The specified rain level to be set.",
+  "Setting.Meteor.thunder-level": "thunder-level",
+  "Setting.Meteor.thunder-level.Description": "The specified thunder level to be set."
 }

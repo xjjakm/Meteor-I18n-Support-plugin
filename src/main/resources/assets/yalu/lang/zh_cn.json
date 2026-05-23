@@ -2220,7 +2220,7 @@
   "Setting.Meteor.snapping-range": "自动吸附范围",
   "Setting.Meteor.snapping-range.Description": "编辑器中的吸附范围。",
   "Module.Meteor.关于汉化插件": "关于汉化插件",
-  "Module.Meteor.关于汉化插件.Description": "",
+  "Module.Meteor.关于汉化插件.Description": "插件作者|译者：食我压路",
   "Setting.Meteor.update-delay": "更新延迟",
   "Setting.Meteor.update-delay.Description": "更新延迟（单位：游戏刻）",
   "Setting.Meteor.shadow": "阴影",
@@ -2452,5 +2452,11 @@
   "Setting.Meteor.prune-by-latency": "按延迟清理",
   "Setting.Meteor.prune-by-latency.Description": "清理延迟达到或高于此值的代理（毫秒）。0表示禁用。",
   "Setting.Meteor.prune-to-count": "清理至数量",
-  "Setting.Meteor.prune-to-count.Description": "如果超出，将代理数量清理至此值。0表示禁用。按延迟优先清理。"
+  "Setting.Meteor.prune-to-count.Description": "如果超出，将代理数量清理至此值。0表示禁用。按延迟优先清理。",
+  "Module.Meteor.weather-changer": "天气选择器",
+  "Module.Meteor.weather-changer.Description": "允许你修改世界当前的天气。",
+  "Setting.Meteor.rain-level": "降雨等级",
+  "Setting.Meteor.rain-level.Description": "要设置的指定降雨等级。",
+  "Setting.Meteor.thunder-level": "雷电等级",
+  "Setting.Meteor.thunder-level.Description": "要设置的指定雷电等级（应该是打雷的概率吧，我不知道这个选项能干什么）。"
 }

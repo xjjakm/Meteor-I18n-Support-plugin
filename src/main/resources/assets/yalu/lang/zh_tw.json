@@ -2219,8 +2219,8 @@
   "Setting.Meteor.border.Description": "文字週圍新增的間距。",
   "Setting.Meteor.snapping-range": "自動吸附範圍",
   "Setting.Meteor.snapping-range.Description": "編輯器中的吸附範圍。",
-  "Module.Meteor.關於漢化插件": "關於漢化插件",
-  "Module.Meteor.關於漢化插件.Description": "",
+  "Module.Meteor.关于汉化插件": "關於漢化插件",
+  "Module.Meteor.关于汉化插件.Description": "插件作者|譯者：食我壓路",
   "Setting.Meteor.update-delay": "更新延遲",
   "Setting.Meteor.update-delay.Description": "更新延遲（單位：遊戲刻）",
   "Setting.Meteor.shadow": "陰影",
@@ -2465,6 +2465,10 @@
   "Setting.Meteor.horizontal-radius.Description": "水平方向上搜尋洞的半徑.",
   "Setting.Meteor.horizontal-range": "水平範圍",
   "Setting.Meteor.horizontal-range.Description": "水平範圍（以方塊為單位）.",
-  "Module.Meteor.關於漢化外掛": "關於漢化外掛",
-  "Module.Meteor.關於漢化外掛.Description": ""
+  "Module.Meteor.weather-changer": "天氣選擇器",
+  "Module.Meteor.weather-changer.Description": "允許你修改世界當前的天氣。",
+  "Setting.Meteor.rain-level": "降雨等級",
+  "Setting.Meteor.rain-level.Description": "要設置的指定降雨等級。",
+  "Setting.Meteor.thunder-level": "雷電等級",
+  "Setting.Meteor.thunder-level.Description": "要設置的指定雷電等級（應該是打雷的機率吧，我不知道這個選項能幹什麼）。"
 }

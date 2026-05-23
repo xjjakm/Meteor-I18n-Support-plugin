@@ -1,17 +1,18 @@
 {
   "schemaVersion": 1,
   "id": "addon-template",
-  "version": "26.1.x-1",
+  "version": "${version}",
   "name": "Meteor I18n Support",
   "description": "为Meteor添加国际化支持",
   "authors": [
     "kono_yalu",
     "noob-xiaoyu",
-    "chxjj"
+    "chxjj",
+    "2357111317192329"
   ],
   "contact": {
-    "sources": "https://github.com/dingzhen-vape/Meteor-I18n-Support-plugin",
-    "issues": "https://github.com/dingzhen-vape/Meteor-I18n-Support-plugin/issues"
+    "sources": "https://github.com/xjjakm/Meteor-I18n-Support-plugin",
+    "issues": "https://github.com/xjjakm/Meteor-I18n-Support-plugin/issues"
   },
   "license": "CC0-1.0",
   "icon": "assets/yalu/icon.png",

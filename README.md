@@ -1,4 +1,4 @@
-本仓库现开放接受问题报告(issues)和拉取请求(pull requests),如果主线没有重大更新，这个仓库不会同步更新
+本仓库现开放接受问题报告(issues)和拉取请求(pull requests)，如果主线没有重大更新，这个仓库不会同步更新，所以从本仓库下载的mod的bug请提交到本仓库。
 # Meteor I18n Support
 #### 这个插件为Meteor本体添加了lang语言文件支持，使大部分文字可以进行非硬编码更改
 #### 这个复刻添加了繁體中文(台灣)语言支持,且只支持最新版本
@@ -12,7 +12,7 @@
 
 - 而这个插件的作用是将所有文字都抽离到一个单独的语言文件中，这样就可以方便的进行非硬编码的更改。
 
-- 即在每次加载时将Module类的title替换成已有的语言文件中的对应文字。
+- 即在每次加载时将Module类的title替换成已有的语言文件中的对应文字。(所以在游戏运行时切换语言插件不生效)
 
 - 并且禁用了Meteor的自定义渲染
 
@@ -38,8 +38,8 @@ AI
 
 Meteor开发者
 
-Wurst客户端提供语言文件I18n支持思路 
-<img width="2560" height="1351" alt="Snipaste_2025-07-31_02-18-44" src="https://github.com/user-attachments/assets/d5d28a82-5da4-456a-8aa0-ec5e35d8e18c" />
+Wurst客户端提供语言文件I18n支持思路
+<img width="1920" height="1009" alt="2026-05-23_16 33 05" src="https://github.com/user-attachments/assets/afc0b1ee-ddd8-4688-aba6-4349d78ed9ce" />
 
 <img width="2560" height="1351" alt="Snipaste_2025-07-31_02-19-29" src="https://github.com/user-attachments/assets/af281df7-9e49-44e5-b1cb-a71de21f7ffc" />
 
