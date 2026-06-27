@@ -1,11 +1,11 @@
 plugins {
-    id("net.fabricmc.fabric-loom") version "1.16-SNAPSHOT"
+    id("net.fabricmc.fabric-loom") version "1.17-SNAPSHOT"
 }
 
 base {
-    archivesName = properties["archives_base_name"] as String
-    version = properties["mod_version"] as String
-    group = properties["maven_group"] as String
+    archivesName = property("archives_base_name") as String
+    version = property("mod_version") as String
+    group = property("maven_group") as String
 }
 
 repositories {
@@ -36,12 +36,12 @@ repositories {
 
 dependencies {
     // Fabric
-    minecraft("com.mojang:minecraft:${properties["minecraft_version"] as String}")
-    implementation("net.fabricmc:fabric-loader:${properties["loader_version"] as String}")
-    implementation("net.fabricmc.fabric-api:fabric-api:${properties["fabric_api_version"] as String}")
+    minecraft("com.mojang:minecraft:${property("minecraft_version") as String}")
+    implementation("net.fabricmc:fabric-loader:${property("loader_version") as String}")
+    implementation("net.fabricmc.fabric-api:fabric-api:${property("fabric_api_version") as String}")
 
     // Meteor
-    implementation("meteordevelopment:meteor-client:${properties["minecraft_version"] as String}-SNAPSHOT")
+    implementation("meteordevelopment:meteor-client:${property("minecraft_version") as String}-SNAPSHOT")
 }
 
 tasks {
