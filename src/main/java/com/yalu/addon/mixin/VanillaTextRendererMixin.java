@@ -74,6 +74,7 @@ public abstract class VanillaTextRendererMixin {
         return (x / scale + width - 1) * scale;
     }
 
+    @Overwrite
     public void end(PoseStack matrices) {
         if (!building) throw new RuntimeException("VanillaTextRenderer.end() called without calling begin()");
 
