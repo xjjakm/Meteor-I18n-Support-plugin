@@ -45,7 +45,7 @@ public class Translator {
         //从mixin获取管理器然后获取当前语言的语言代码，然后加载翻译文件
 //		//这个方法会将语言文件内的键值对赋值给currentLangStrings（这是个HASHMAP（键值对））
         HashMap<String, String> currentLangStrings = new HashMap<>();
-        loadTranslations(manager, getCurrentLangCode(),currentLangStrings::put);
+        loadTranslations(manager, getCurrentLangCodes(),currentLangStrings::put);
         //设置不可变的map 也就是说现在这个currentLangStrings就是当前语言的键值对翻译了
         this.currentLangStrings =
             Collections.unmodifiableMap(currentLangStrings);
