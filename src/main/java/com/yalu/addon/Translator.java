@@ -20,7 +20,7 @@ import java.util.function.BiConsumer;
 
 public class Translator {
     private final JsonObject langJson = new JsonObject();
-    private Map<String, String> currentLangStrings = null
+    private Map<String, String> currentLangStrings = null;
     public String Translate(String key,String name) {
         String value = this.currentLangStrings.get(key);
         if(value != null){
