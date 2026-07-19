@@ -2932,5 +2932,7 @@
   "Setting.Meteor.walk-home": "步行回家",
   "Setting.Meteor.walk-home.Description": "当您的库存已满时，将步行“回家”。",
   "Setting.Meteor.log-out": "注销",
-  "Setting.Meteor.log-out.Description": "当您的库存已满时注销。如果启用步行回家，将首先步行回家。"
+  "Setting.Meteor.log-out.Description": "当您的库存已满时注销。如果启用步行回家，将首先步行回家。",
+  "Setting.Meteor.file": "文件",
+  "Setting.Meteor.file.Description": "要使用的文件。"
 }
