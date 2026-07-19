@@ -27,7 +27,7 @@
 - ！！！[MeteorCN](https://github.com/dingzhen-vape/MeteorCN)不会更新了
 
 ### 待办事项
-- [ ] Baritone的选项翻译
+- 不用使VanillaTextRenderer内的scaleIndividually始终设置成true，文字显示正确
 
 ### 使用教程 
 
