@@ -52,8 +52,6 @@ public class Translator {
     }
 
     private Iterable<String> getCurrentLangCodes() {
-        // Weird bug: Some users have their language set to "en_US" instead of
-        // "en_us.json" for some reason. Last seen in 1.21.
         String mainLangCode = Minecraft.getInstance().getLanguageManager().getSelected().toLowerCase();
 
         ArrayList<String> langCodes = new ArrayList<>();
@@ -71,7 +69,7 @@ public class Translator {
         for(String langCode : langCodes)
         {
             //设置路径
-            String langFilePath = "lang/" + langCode + ".json";
+            String langFilePath = "lang/" + langCode;
 
             //注册语言ID
             Identifier langId = Identifier.fromNamespaceAndPath("yalu", langFilePath);
