@@ -4,7 +4,9 @@
   "compatibilityLevel": "JAVA_25",
   "client": [
     "ModuleMixin",
-    "TextRendererMixin"
+    "TextRendererMixin",
+    "MixinFont",
+    "MixinFonts"
   ],
   "injectors": {
     "defaultRequire": 1
@@ -12,6 +14,8 @@
   "mixins": [
     "ModuleMixin",
     "SettingMixin",
-    "VanillaTextRendererMixin"
+    "VanillaTextRendererMixin",
+    "MixinFont",
+    "MixinFonts"
   ]
 }
