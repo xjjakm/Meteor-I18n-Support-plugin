@@ -26,6 +26,9 @@
 - ！！！本插件不会默认适配已经汉化过的Meteor客户端
 - ！！！[MeteorCN](https://github.com/dingzhen-vape/MeteorCN)不会更新了
 
+### 待办事项
+- 不用使VanillaTextRenderer内的scaleIndividually始终设置成true，文字显示正确
+
 ### 使用教程 
 
  [BiliBili](https://www.bilibili.com/video/BV1zX8yzSE9E?spm_id_from=333.788.videopod.sections&vd_source=113cda7aa1ace627d124f6b5f8e83d4c&p=2)

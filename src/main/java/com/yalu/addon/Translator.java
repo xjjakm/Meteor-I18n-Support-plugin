@@ -20,7 +20,7 @@ import java.util.function.BiConsumer;
 
 public class Translator {
     private final JsonObject langJson = new JsonObject();
-    private Map<String, String> currentLangStrings;
+    private Map<String, String> currentLangStrings = null;
     public String Translate(String key,String name) {
         String value = this.currentLangStrings.get(key);
         if(value != null){
@@ -41,11 +41,11 @@ public class Translator {
 
     public void reload(ResourceManager manager)
     {
-        HashMap<String, String> currentLangStrings = new HashMap<>();
+        if (this.currentLangStrings != null) return;
         //从mixin获取管理器然后获取当前语言的语言代码，然后加载翻译文件
 //		//这个方法会将语言文件内的键值对赋值给currentLangStrings（这是个HASHMAP（键值对））
-        loadTranslations(manager, getCurrentLangCodes(),
-            currentLangStrings::put);
+        HashMap<String, String> currentLangStrings = new HashMap<>();
+        loadTranslations(manager, getCurrentLangCodes(),currentLangStrings::put);
         //设置不可变的map 也就是说现在这个currentLangStrings就是当前语言的键值对翻译了
         this.currentLangStrings =
             Collections.unmodifiableMap(currentLangStrings);
@@ -69,7 +69,7 @@ public class Translator {
         for(String langCode : langCodes)
         {
             //设置路径
-            String langFilePath = "lang/" + langCode + ".json";
+            String langFilePath = "lang/" + langCode;
 
             //注册语言ID
             Identifier langId = Identifier.fromNamespaceAndPath("yalu", langFilePath);
