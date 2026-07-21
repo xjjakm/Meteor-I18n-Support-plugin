@@ -27,7 +27,7 @@
 - ！！！[MeteorCN](https://github.com/dingzhen-vape/MeteorCN)不会更新了
 
 ### 待办事项
-- 不用使VanillaTextRenderer内的scaleIndividually始终设置成true，文字显示正确
+- 自定义字体（中文）正常显示
 
 ### 使用教程 
 
