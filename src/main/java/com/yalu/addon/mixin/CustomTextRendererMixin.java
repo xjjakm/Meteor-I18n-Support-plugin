@@ -1,4 +1,4 @@
-﻿package com.yalu.addon.mixin;
+package com.yalu.addon.mixin;
 
 import com.yalu.addon.font_fix.FontFix;
 import meteordevelopment.meteorclient.renderer.MeshBuilder;

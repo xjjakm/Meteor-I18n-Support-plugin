@@ -1,4 +1,4 @@
-﻿package com.yalu.addon.util.trans_engine;
+package com.yalu.addon.util.trans_engine;
 
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;

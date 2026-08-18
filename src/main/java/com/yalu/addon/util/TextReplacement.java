@@ -1,4 +1,4 @@
-﻿package com.yalu.addon.util;
+package com.yalu.addon.util;
 
 import java.util.*;
 

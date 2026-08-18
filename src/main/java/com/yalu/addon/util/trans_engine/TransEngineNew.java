@@ -1,4 +1,4 @@
-﻿package com.yalu.addon.util.trans_engine;
+package com.yalu.addon.util.trans_engine;
 
 import com.yalu.addon.util.KeyBuilder;
 import com.yalu.addon.util.NameCache;

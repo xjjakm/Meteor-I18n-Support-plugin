@@ -1,4 +1,4 @@
-﻿package com.yalu.addon.mixin;
+package com.yalu.addon.mixin;
 
 import com.yalu.addon.util.TextReplacement;
 import meteordevelopment.meteorclient.gui.widgets.WWidget;

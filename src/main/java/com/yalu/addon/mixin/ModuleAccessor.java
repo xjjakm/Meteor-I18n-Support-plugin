@@ -1,4 +1,4 @@
-﻿package com.yalu.addon.mixin;
+package com.yalu.addon.mixin;
 
 import meteordevelopment.meteorclient.systems.modules.Module;
 import org.spongepowered.asm.mixin.Mixin;

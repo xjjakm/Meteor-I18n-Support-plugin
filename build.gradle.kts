@@ -22,6 +22,17 @@ repositories {
         name = "meteor-maven-snapshots"
         url = uri("https://maven.meteordev.org/snapshots")
     }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = uri("https://api.modrinth.com/maven")
+            }
+        }
+        filter {
+            includeGroup("maven.modrinth")
+        }
+    }
 }
 
 dependencies {
@@ -32,6 +43,9 @@ dependencies {
 
     // Meteor
     implementation("meteordevelopment:meteor-client:${property("minecraft_version") as String}-SNAPSHOT")
+
+    // Catppuccin (for RichTextRenderer Mixin)
+    implementation("maven.modrinth:3Q35hPRA:el8r6gJX")
 }
 
 tasks {
