@@ -27,7 +27,7 @@
 - ！！！[MeteorCN](https://github.com/dingzhen-vape/MeteorCN)不会更新了
 
 ### 待办事项
-- 自定义字体（中文）正常显示
+- 不知道
 
 ### 使用教程 
 
