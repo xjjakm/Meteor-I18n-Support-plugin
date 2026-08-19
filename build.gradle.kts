@@ -45,7 +45,7 @@ dependencies {
     implementation("meteordevelopment:meteor-client:${property("minecraft_version") as String}-SNAPSHOT")
 
     // Catppuccin (for RichTextRenderer Mixin)
-    implementation("maven.modrinth:3Q35hPRA:el8r6gJX")
+    implementation("maven.modrinth:catppuccin-theme-addon:${property("catppuccin_version") as String}")
 }
 
 tasks {
