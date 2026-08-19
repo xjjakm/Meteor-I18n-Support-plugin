@@ -9,6 +9,7 @@ import meteordevelopment.meteorclient.renderer.text.FontFace;
 import meteordevelopment.meteorclient.renderer.text.TextRenderer;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -59,7 +60,7 @@ this.fonts_fix[i] = new FontFix(buffer, (int)Math.round(27.0 * ((double)i * 0.5 
 * @reason  我只能用这种方法修复他 之前尝试过Mixin Font类 但是字体会乱码
 */
 @Overwrite
-public void begin(double scale, boolean scaleOnly, boolean big) {
+public void begin(GuiGraphicsExtractor graphics, double scale, boolean scaleOnly, boolean big) {
 if (this.building) {
 throw new RuntimeException("CustomTextRenderer.begin() called twice");
 } else {
@@ -122,7 +123,7 @@ return (double)(font.getHeight() + 1 + (shadow ? 1 : 0)) * this.scale / 1.5;
 public double render(String text, double x, double y, Color color, boolean shadow) {
 boolean wasBuilding = this.building;
 if (!wasBuilding) {
-this.begin();
+this.begin(null);
 }
 
 double width;
@@ -154,7 +155,7 @@ throw new RuntimeException("CustomTextRenderer.end() called without calling begi
 } else {
 if (!this.scaleOnly) {
 this.mesh.end();
-MeshRenderer.begin().attachments(Minecraft.getInstance().getMainRenderTarget()).pipeline(MeteorRenderPipelines.UI_TEXT).mesh(this.mesh).sampler("u_Texture", this.font_fix.texture.getTextureView(), this.font_fix.texture.getSampler()).end();
+MeshRenderer.begin().attachments(Minecraft.getInstance().gameRenderer.mainRenderTarget()).pipeline(MeteorRenderPipelines.UI_TEXT).mesh(this.mesh).sampler("u_Texture", this.font_fix.texture.getTextureView(), this.font_fix.texture.getSampler()).end();
 }
 
 this.building = false;
@@ -162,5 +163,6 @@ this.scale = 1.0;
 }
 }
 
+@Unique
 public void destroy() {}
 }

@@ -1,12 +1,15 @@
 package com.yalu.addon.mixin;
 
 import com.yalu.addon.font_fix.FontFix;
-import meteordevelopment.meteorclient.renderer.*;
+import meteordevelopment.meteorclient.renderer.MeshBuilder;
+import meteordevelopment.meteorclient.renderer.MeshRenderer;
+import meteordevelopment.meteorclient.renderer.MeteorRenderPipelines;
 import meteordevelopment.meteorclient.renderer.text.CustomTextRenderer;
 import meteordevelopment.meteorclient.renderer.text.FontFace;
 import meteordevelopment.meteorclient.renderer.text.TextRenderer;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -57,7 +60,7 @@ public abstract class TextRendererMixin implements TextRenderer {
      * @reason  我只能用这种方法修复他 之前尝试过Mixin Font类 但是字体会乱码
      */
     @Overwrite
-    public void begin(double scale, boolean scaleOnly, boolean big) {
+    public void begin(GuiGraphicsExtractor graphics, double scale, boolean scaleOnly, boolean big) {
         if (this.building) {
             throw new RuntimeException("CustomTextRenderer.begin() called twice");
         } else {
@@ -120,7 +123,7 @@ public abstract class TextRendererMixin implements TextRenderer {
     public double render(String text, double x, double y, Color color, boolean shadow) {
         boolean wasBuilding = this.building;
         if (!wasBuilding) {
-            this.begin();
+            this.begin(null);
         }
 
         double width;
@@ -152,7 +155,7 @@ public abstract class TextRendererMixin implements TextRenderer {
         } else {
             if (!this.scaleOnly) {
                 this.mesh.end();
-                MeshRenderer.begin().attachments(Minecraft.getInstance().getMainRenderTarget()).pipeline(MeteorRenderPipelines.UI_TEXT).mesh(this.mesh).sampler("u_Texture", this.font_fix.texture.getTextureView(), this.font_fix.texture.getSampler()).end();
+                MeshRenderer.begin().attachments(Minecraft.getInstance().gameRenderer.mainRenderTarget()).pipeline(MeteorRenderPipelines.UI_TEXT).mesh(this.mesh).sampler("u_Texture", this.font_fix.texture.getTextureView(), this.font_fix.texture.getSampler()).end();
             }
 
             this.building = false;

@@ -1,7 +1,7 @@
 package com.yalu.addon.font_fix;
 
+import com.mojang.blaze3d.GpuFormat;
 import com.mojang.blaze3d.textures.FilterMode;
-import com.mojang.blaze3d.textures.TextureFormat;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import meteordevelopment.meteorclient.renderer.MeshBuilder;
 import meteordevelopment.meteorclient.renderer.Texture;
@@ -43,7 +43,7 @@ bitmap = BufferUtils.createByteBuffer(SIZE * SIZE);
 packContext = STBTTPackContext.create();
 STBTruetype.stbtt_PackBegin(packContext, bitmap, SIZE, SIZE, 0, 1);
 
-texture = new Texture(SIZE, SIZE, TextureFormat.RED8, FilterMode.LINEAR, FilterMode.LINEAR);
+texture = new Texture(SIZE, SIZE, GpuFormat.R8_UNORM, FilterMode.LINEAR, FilterMode.LINEAR);
 texture.upload(bitmap);
 scale = STBTruetype.stbtt_ScaleForPixelHeight(fontInfo, height);
 
@@ -98,7 +98,7 @@ pc.xadvance()
 }
 
 private void createTexture() {
-texture = new Texture(SIZE, SIZE, TextureFormat.RED8, FilterMode.LINEAR, FilterMode.LINEAR);
+texture = new Texture(SIZE, SIZE, GpuFormat.R8_UNORM, FilterMode.LINEAR, FilterMode.LINEAR);
 texture.upload(bitmap);
 }
 

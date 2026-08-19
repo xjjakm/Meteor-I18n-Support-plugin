@@ -15,10 +15,8 @@ import meteordevelopment.meteorclient.gui.widgets.containers.WVerticalList;
 import meteordevelopment.meteorclient.gui.widgets.input.WTextBox;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WCheckbox;
 import meteordevelopment.meteorclient.utils.Utils;
-import net.minecraft.util.Tuple;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+
+import java.util.*;
 import java.util.function.Consumer;
 
 public class StringSelectScreen extends WindowScreen {
@@ -141,15 +139,15 @@ strings.setExpanded(true);
 if (filterText.isEmpty()) {
 setting.validValues.forEach(stringForeach);
 } else {
-List<Tuple<String, Integer>> entities = new ArrayList<>();
+List<Map.Entry<String, Integer>> entities = new ArrayList<>();
 setting.validValues.forEach(str -> {
 int words = Utils.searchInWords(str, filterText);
 int diff = Utils.searchLevenshteinDefault(str, filterText, false);
 
-if (words > 0 || diff < str.length() / 2) entities.add(new Tuple<>(str, -diff));
+if (words > 0 || diff < str.length() / 2) entities.add(new AbstractMap.SimpleEntry<>(str, -diff));
 });
-entities.sort(Comparator.comparingInt(value -> -value.getB()));
-for (Tuple<String, Integer> pair : entities) stringForeach.accept(pair.getA());
+entities.sort(Comparator.comparingInt(value -> -value.getValue()));
+for (Map.Entry<String, Integer> pair : entities) stringForeach.accept(pair.getKey());
 }
 
 if (stringsT.cells.isEmpty()) list.cells.remove(stringsCell);

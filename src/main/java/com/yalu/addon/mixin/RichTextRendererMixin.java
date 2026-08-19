@@ -10,6 +10,7 @@ import meteordevelopment.meteorclient.renderer.text.FontFace;
 import meteordevelopment.meteorclient.renderer.text.TextRenderer;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -77,7 +78,7 @@ public abstract class RichTextRendererMixin implements TextRenderer {
      * @reason 替换 Font 为 FontFix 以支持 CJK
      */
     @Overwrite
-    public void begin(double scale, boolean scaleOnly, boolean big) {
+    public void begin(GuiGraphicsExtractor graphics, double scale, boolean scaleOnly, boolean big) {
         if (building) throw new RuntimeException("RichTextRenderer.begin() called twice");
         if (!scaleOnly) mesh.begin();
 
@@ -141,7 +142,7 @@ public abstract class RichTextRendererMixin implements TextRenderer {
     @Overwrite
     public double render(String text, double x, double y, Color color, boolean shadow) {
         boolean wasBuilding = building;
-        if (!wasBuilding) begin(1, false, false);
+        if (!wasBuilding) begin(null, 1, false, false);
 
         double renderScale = scale / 1.5;
         double width;
@@ -175,7 +176,7 @@ public abstract class RichTextRendererMixin implements TextRenderer {
         if (!scaleOnly) {
             mesh.end();
             MeshRenderer.begin()
-                    .attachments(Minecraft.getInstance().getMainRenderTarget())
+                    .attachments(Minecraft.getInstance().gameRenderer.mainRenderTarget())
                     .pipeline(MeteorRenderPipelines.UI_TEXT)
                     .mesh(mesh)
                     .sampler("u_Texture", fontFix.texture.getTextureView(), fontFix.texture.getSampler())
