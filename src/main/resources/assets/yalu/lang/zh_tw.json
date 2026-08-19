@@ -2982,5 +2982,11 @@
   "Setting.Meteor.On ground only": "僅地面",
   "Setting.Meteor.On ground only.Description": "僅攻擊地面上的實體",
   "Setting.Meteor.Custom on ground check": "自訂地面檢查",
-  "Setting.Meteor.Custom on ground check.Description": "使用自訂地面檢查代替常規的 entity.isOnGround。在某些伺服器上很有用"
+  "Setting.Meteor.Custom on ground check.Description": "使用自訂地面檢查代替常規的 entity.isOnGround。在某些伺服器上很有用",
+  "Setting.Meteor.modules-help-text": "模組說明文字",
+  "Setting.Meteor.modules-help-text.Description": "在模組介面中切換顯示說明文字。",
+  "Setting.Meteor.tab-icons": "分頁圖示",
+  "Setting.Meteor.tab-icons.Description": "在頂欄分頁旁顯示圖示。",
+  "Setting.Meteor.indent-settings": "縮排設定",
+  "Setting.Meteor.indent-settings.Description": "對有條件可見性的設定進行縮排，類似樹狀檢視。"
 }

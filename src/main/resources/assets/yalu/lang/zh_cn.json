@@ -3304,5 +3304,11 @@
   "Setting.Meteor.On ground only": "仅地面",
   "Setting.Meteor.On ground only.Description": "仅攻击地面上的实体",
   "Setting.Meteor.Custom on ground check": "自定义地面检查",
-  "Setting.Meteor.Custom on ground check.Description": "使用自定义地面检查代替常规的 entity.isOnGround。在某些服务器上很有用"
+  "Setting.Meteor.Custom on ground check.Description": "使用自定义地面检查代替常规的 entity.isOnGround。在某些服务器上很有用",
+  "Setting.Meteor.modules-help-text": "模块帮助文本",
+  "Setting.Meteor.modules-help-text.Description": "在模块界面中切换显示帮助文本。",
+  "Setting.Meteor.tab-icons": "标签页图标",
+  "Setting.Meteor.tab-icons.Description": "在顶栏标签页旁显示图标。",
+  "Setting.Meteor.indent-settings": "缩进设置",
+  "Setting.Meteor.indent-settings.Description": "对有条件可见性的设置进行缩进，类似树形视图。"
 }

@@ -3304,5 +3304,11 @@
   "Setting.Meteor.forward-multiplier": "forward-multiplier",
   "Setting.Meteor.forward-multiplier.Description": "",
   "Setting.Meteor.sideways-multiplier": "sideways-multiplier",
-  "Setting.Meteor.sideways-multiplier.Description": ""
+  "Setting.Meteor.sideways-multiplier.Description": "",
+  "Setting.Meteor.modules-help-text": "modules-help-text",
+  "Setting.Meteor.modules-help-text.Description": "Toggle help text in the modules screen.",
+  "Setting.Meteor.tab-icons": "tab-icons",
+  "Setting.Meteor.tab-icons.Description": "Displays icons next to tabs in the top bar.",
+  "Setting.Meteor.indent-settings": "indent-settings",
+  "Setting.Meteor.indent-settings.Description": "Indents setting that have conditional visibility like in a Tree View."
 }
