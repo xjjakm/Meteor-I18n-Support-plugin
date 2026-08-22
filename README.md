@@ -1,7 +1,7 @@
 # Meteor I18n Support
 ### ![repo-size](https://img.shields.io/github/repo-size/dingzhen-vape/Meteor-I18n-Support-plugin) ![Downloads](https://img.shields.io/github/downloads/dingzhen-vape/Meteor-I18n-Support-plugin/total)
 ### 
-#### 这个插件为Meteor本体添加了lang语言文件支持，使大部分文字可以进行非硬编码更改
+#### 这个插件为Meteor本体添加了lang语言文件支持，使大部分文字可以进行非硬编码更改,修复了Meteor本体的字体显示问题,现在可以正常显示中文
 ### How to use
 与Meteor本体一起使用 像其他插件一样 放入mods文件夹即可
 
@@ -11,10 +11,6 @@
 - 而这个插件的作用是将所有文字都抽离到一个单独的语言文件中，这样就可以方便的进行非硬编码的更改。
 
 - 即在每次加载时将Module类的title替换成已有的语言文件中的对应文字。
-
-- 并且禁用了Meteor的自定义渲染
-
-- 使VanillaTextRenderer内的scaleIndividually始终设置成true，以保证文字显示正确
 
 ### 注意事项
 - 本插件未进行全版本测试
@@ -33,7 +29,7 @@
 
 ### 鸣谢
 我
-AI
+DEEPSEEK
 Meteor开发者
 Wurst客户端提供语言文件I18n支持思路
 
