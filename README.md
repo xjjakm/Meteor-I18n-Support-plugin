@@ -1,4 +1,6 @@
 # Meteor I18n Support
+### ![repo-size](https://img.shields.io/github/repo-size/dingzhen-vape/Meteor-I18n-Support-plugin) ![Downloads](https://img.shields.io/github/downloads/dingzhen-vape/Meteor-I18n-Support-plugin/total)
+### 
 #### 这个插件为Meteor本体添加了lang语言文件支持，使大部分文字可以进行非硬编码更改
 ### How to use
 与Meteor本体一起使用 像其他插件一样 放入mods文件夹即可
