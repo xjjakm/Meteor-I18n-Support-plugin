@@ -15,9 +15,15 @@ import java.util.List;
 
 @Mixin(value = Fonts.class , remap = false)
 public class FontsMixin {
+
     @Shadow
     @Final
     public static List<FontFamily> FONT_FAMILIES;
+    @Shadow @Final public static String[] BUILTIN_FONTS;
+    @Inject(method = "refresh", at = @At("HEAD"))
+    private static void changeDefaultFont(CallbackInfo ci) {
+        BUILTIN_FONTS[1] = "WenQuanWeiMiHei";  // 默认字体从 Comfortaa 改为你的中文字体
+    }
 
     @Inject(method = "refresh",at = @At(value = "INVOKE", target = "Ljava/util/List;sort(Ljava/util/Comparator;)V"))
     private static void refresh(CallbackInfo ci) {
