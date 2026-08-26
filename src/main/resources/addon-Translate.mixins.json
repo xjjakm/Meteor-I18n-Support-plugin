@@ -10,7 +10,6 @@
     "CustomTextRendererMixin",
     "DefaultSettingsWidgetFactoryMixin",
     "FontCjkMixin",
-    "FontMixin",
     "FontsMixin",
     "HudElementInfoAccessor",
     "JoinMultiplayerScreenTranslationMixin",
@@ -36,8 +35,7 @@
     "WTextBoxMixin",
     "WTopBarButtonMixin",
     "WWidgetMixin",
-    "WWindowMixin",
-    "HudRenderer.FontHolder"
+    "WWindowMixin"
   ],
   "injectors": {
     "defaultRequire": 1
@@ -50,7 +48,6 @@
     "CustomTextRendererMixin",
     "DefaultSettingsWidgetFactoryMixin",
     "FontCjkMixin",
-    "FontMixin",
     "FontsMixin",
     "HudElementInfoAccessor",
     "JoinMultiplayerScreenTranslationMixin",
