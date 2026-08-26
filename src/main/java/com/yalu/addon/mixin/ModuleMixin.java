@@ -33,18 +33,49 @@ public abstract class ModuleMixin {
         this.description = TRANSLATOR.Translate(DescriptionKey,this.description);
     }
 
+    @Unique
+    private static boolean isZhCn() {
+        try {
+            String lang = MC.getLanguageManager().getSelected();
+            return lang != null && lang.toLowerCase().equals("zh_cn");
+        } catch (Exception ignored) {
+            return false;
+        }
+    }
+
+    @Unique
+    private static boolean isZhTw() {
+        try {
+            String lang = MC.getLanguageManager().getSelected();
+            return lang != null && lang.toLowerCase().equals("zh_tw");
+        } catch (Exception ignored) {
+            return false;
+        }
+    }
+
     @Redirect(method = "sendToggledMsg", at = @At(value = "INVOKE", target = "Lmeteordevelopment/meteorclient/utils/player/ChatUtils;sendMsg(ILnet/minecraft/ChatFormatting;Ljava/lang/String;[Ljava/lang/Object;)V"))
     private void redirectToggledMsg(int id, ChatFormatting color, String message, Object... args) {
         Object[] newArgs = new Object[args.length];
         for (int i = 0; i < args.length; i++) {
             if (args[i] instanceof String s) {
-                if (s.equals(ChatFormatting.GREEN + "on")) {
-                    newArgs[i] = ChatFormatting.GREEN + "开启";
-                } else if (s.equals(ChatFormatting.RED + "off")) {
-                    newArgs[i] = ChatFormatting.RED + "关闭";
-                } else {
-                    newArgs[i] = s;
+                if (isZhCn()) {
+                    if (s.equals(ChatFormatting.GREEN + "on")) {
+                        newArgs[i] = ChatFormatting.GREEN + "开启";
+                        continue;
+                    } else if (s.equals(ChatFormatting.RED + "off")) {
+                        newArgs[i] = ChatFormatting.RED + "关闭";
+                        continue;
+                    }
+                } else if (isZhTw()) {
+                    if (s.equals(ChatFormatting.GREEN + "on")) {
+                        newArgs[i] = ChatFormatting.GREEN + "開啟";
+                        continue;
+                    } else if (s.equals(ChatFormatting.RED + "off")) {
+                        newArgs[i] = ChatFormatting.RED + "關閉";
+                        continue;
+                    }
                 }
+                newArgs[i] = s;
             } else {
                 newArgs[i] = args[i];
             }

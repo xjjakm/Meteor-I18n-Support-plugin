@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -26,7 +27,8 @@ public static void reload() {
 String langCode = getCurrentLanguage();
 Map<String, String> translations = load(langCode);
 
-if (translations.isEmpty() && !langCode.equals("zh_cn")) {
+// 只有 zh_tw 找不到时才 fallback 到 zh_cn，其它语言不 fallback
+if (translations.isEmpty() && langCode.equals("zh_tw")) {
 translations = load("zh_cn");
 }
 
@@ -35,10 +37,12 @@ LOG.info("[MeteorTranslation] Loaded {} universal translations for {}", translat
 }
 
 private static String getCurrentLanguage() {
+try {
 Minecraft mc = Minecraft.getInstance();
-if (mc != null && mc.options != null) {
-return mc.options.languageCode;
+if (mc != null && mc.getLanguageManager() != null && mc.getLanguageManager().getSelected() != null) {
+return mc.getLanguageManager().getSelected().toLowerCase(Locale.ROOT);
 }
+} catch (Exception ignored) {}
 return "zh_cn";
 }
 

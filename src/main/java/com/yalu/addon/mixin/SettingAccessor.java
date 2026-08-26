@@ -7,6 +7,9 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(value = Setting.class,remap = false)
 public interface SettingAccessor {
+@Accessor("name")
+public String getName();
+
 @Accessor("title")
 @Mutable
 public void setTitle(String title);
