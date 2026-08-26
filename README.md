@@ -88,9 +88,11 @@
 1. `UniversalLangLoader.reload()` — 按新语言重新加载 universal 替换表
 2. `LanguageRefresh.applyAll()` — 遍历所有已注册的 Module / SettingGroup / Setting / Category / Tab，使用原始英文名作为 key 重新查询 TRANSLATOR 并更新字段
 
+此外，`TranslateAddon.onInitialize()` 也会调用 `LanguageRefresh.applyAll()`：由于 `TranslateAddon.<clinit>` 中创建 `CATEGORY` 时 MC 尚为 null，部分模块/分类/Tab 的 Mixin.onInit 无法翻译，需等 MC 就绪后统一补翻译。
+
 **原始名称找回策略：**
 - Module.name — 始终保持英文，直接用作翻译 key
-- Category — 通过 `NameCache.category()` 缓存原始英文名
+- Category — 通过 `NameCache.category()` 缓存原始英文名（使用 `IdentityHashMap` 防止 `hashCode()` 依赖可变 `name` 导致缓存失效）
 - Tab — 通过 `NameCache.tab()` 缓存原始英文名
 - SettingGroup — 通过 `NameCache.group()` 缓存原始英文名
 - Setting — 通过 `SettingAccessor.getName()` Mixin Accessor 读取 `name` 字段（未被翻译的原始英文）
