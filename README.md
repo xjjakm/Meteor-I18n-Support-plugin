@@ -25,9 +25,9 @@
 - 本分支有三套翻译方式
 
 #### 第一套：Translator 语言文件系统（标准 key-value，分支最早的翻译模式）
-**文件：** [zh_cn.json](file:///e:/Meteor-I18n-Support-plugin-chxjj/src/main/resources/assets/yalu/lang/zh_cn.json) / [zh_tw.json](file:///e:/Meteor-I18n-Support-plugin-chxjj/src/main/resources/assets/yalu/lang/zh_tw.json) / [en_us.json](file:///e:/Meteor-I18n-Support-plugin-chxjj/src/main/resources/assets/yalu/lang/en_us.json) 
+**文件：** [zh_cn.json](src/main/resources/assets/yalu/lang/zh_cn.json) / [zh_tw.json](src/main/resources/assets/yalu/lang/zh_tw.json) / [en_us.json](src/main/resources/assets/yalu/lang/en_us.json) 
 
-**核心类：** [Translator.java](file:///e:/Meteor-I18n-Support-plugin-chxjj/src/main/java/com/yalu/addon/Translator.java) + 各 Mixin（ModuleMixin、SettingMixin 等）
+**核心类：** [Translator.java](src/main/java/com/yalu/addon/Translator.java) + 各 Mixin（ModuleMixin、SettingMixin 等）
 
 **原理：** 通过 Minecraft 的 `ResourceManager` 加载标准 JSON 语言文件，建立 `key → 翻译` 的 HashMap。各类 Mixin 在对象初始化时调用 `TRANSLATOR.Translate(key, fallbackName)` 替换字段（如 `title`、`description`）。
 
@@ -36,11 +36,13 @@
 - 设置名 / 设置描述（`Setting.Meteor.Xxx`）
 - 分类、标签页等静态资源
 
+**多插件前缀支持：** `ModuleMixin` 的 `@Inject onInit` 从 `addon.name` 动态获取插件前缀（如 `Meteor`、`Meteor+`、`Meteor-I18n-Support`），使各插件的模块/设置翻译能使用各自前缀的 key（`Module.Meteor+.*`、`Module.Meteor-I18n-Support.*` 等）
+
 ---
 
 #### 第二套：Universal 通用文本替换系统（运行时字符串精确匹配）
-**文件：** [universal_zh_cn.json](file:///e:/Meteor-I18n-Support-plugin-chxjj/src/main/resources/assets/yalu/lang/universal_zh_cn.json) / [universal_zh_tw.json](file:///e:/Meteor-I18n-Support-plugin-chxjj/src/main/resources/assets/yalu/lang/universal_zh_tw.json) / [universal_en_us.json](file:///e:/Meteor-I18n-Support-plugin-chxjj/src/main/resources/assets/yalu/lang/universal_en_us.json)
-**核心类：** [UniversalLangLoader.java](file:///e:/Meteor-I18n-Support-plugin-chxjj/src/main/java/com/yalu/addon/util/UniversalLangLoader.java) + [TextReplacement.java](file:///e:/Meteor-I18n-Support-plugin-chxjj/src/main/java/com/yalu/addon/util/TextReplacement.java)
+**文件：** [universal_zh_cn.json](src/main/resources/assets/yalu/lang/universal_zh_cn.json) / [universal_zh_tw.json](src/main/resources/assets/yalu/lang/universal_zh_tw.json) / [universal_en_us.json](src/main/resources/assets/yalu/lang/universal_en_us.json)
+**核心类：** [UniversalLangLoader.java](src/main/java/com/yalu/addon/util/UniversalLangLoader.java) + [TextReplacement.java](src/main/java/com/yalu/addon/util/TextReplacement.java)
 
 **原理：** 启动时及切换语言时（`TranslateAddon.onInitialize` / `LanguageManagerMixin` → `UniversalLangLoader.reload()`）根据当前游戏语言加载对应的 `universal_<lang>.json` 到 `TextReplacement.map`，运行时通过 `@ModifyArg` 拦截方法参数后调用 `TextReplacement.replace(str)` 做精确替换。
 
@@ -53,15 +55,14 @@
 - 聊天消息格式字符串：`ChatUtilsMixin` 拦截 `String.format()` 的第一个参数
 - 聊天前缀、通知字符串
 - 按钮文本、状态文本（如 `Not using a proxy`）
-- 模块开关提示（`Toggled` 系列字符串）
 
 ---
 
 #### 第三套：Mixin 直改系统（修改代码逻辑或参数,其实也算另外一种“硬编码”）
-**核心类：** [JoinMultiplayerScreenTranslationMixin](file:///e:/Meteor-I18n-Support-plugin-chxjj/src/main/java/com/yalu/addon/mixin/JoinMultiplayerScreenTranslationMixin.java) / [ModuleMixin](file:///e:/Meteor-I18n-Support-plugin-chxjj/src/main/java/com/yalu/addon/mixin/ModuleMixin.java) 的 `@Redirect` 等
+**核心类：** [JoinMultiplayerScreenTranslationMixin](src/main/java/com/yalu/addon/mixin/JoinMultiplayerScreenTranslationMixin.java) / [ModuleMixin](src/main/java/com/yalu/addon/mixin/ModuleMixin.java) 的 `@Redirect` 等
 
 **原理：** 不依赖字符串匹配，直接在 Mixin 中替换逻辑：
-- `ModuleMixin` → `@Redirect sendToggledMsg(...)` 根据当前语言分流：`zh_cn` 显示「开启/关闭」、`zh_tw` 显示「開啟/關閉」、其他语言保持 `on/off`
+- `ModuleMixin` → `@Redirect sendToggledMsg(...)` 根据当前语言分流：`zh_cn` 显示「开启/关闭」、`zh_tw` 显示「開啟/關閉」、其他语言保持 `on/off`（带颜色代码的动态拼接字符串，universal 系统无法精确匹配，必须用 Mixin 直改）
 - `JoinMultiplayerScreenTranslationMixin` → 通过 `children()` 遍历找到 `Button` 实例并替换文本
 
 **覆盖范围：**
@@ -79,7 +80,7 @@
 ---
 
 #### 实时语言切换（无需重启游戏）
-**核心类：** [LanguageManagerMixin.java](file:///e:/Meteor-I18n-Support-plugin-chxjj/src/main/java/com/yalu/addon/mixin/LanguageManagerMixin.java) + [LanguageRefresh.java](file:///e:/Meteor-I18n-Support-plugin-chxjj/src/main/java/com/yalu/addon/util/LanguageRefresh.java) + [SettingAccessor.java](file:///e:/Meteor-I18n-Support-plugin-chxjj/src/main/java/com/yalu/addon/mixin/SettingAccessor.java)
+**核心类：** [LanguageManagerMixin.java](src/main/java/com/yalu/addon/mixin/LanguageManagerMixin.java) + [LanguageRefresh.java](src/main/java/com/yalu/addon/util/LanguageRefresh.java) + [SettingAccessor.java](src/main/java/com/yalu/addon/mixin/SettingAccessor.java)
 
 **原理：** `LanguageManagerMixin` 注入 `LanguageManager.setSelected()` 的 TAIL，在玩家切换语言后依次执行：
 1. `UniversalLangLoader.reload()` — 按新语言重新加载 universal 替换表
