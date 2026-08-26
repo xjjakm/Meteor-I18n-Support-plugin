@@ -27,14 +27,16 @@
 #### 第一套：Translator 语言文件系统（标准 key-value，分支最早的翻译模式）
 **文件：** [zh_cn.json](src/main/resources/assets/yalu/lang/zh_cn.json) / [zh_tw.json](src/main/resources/assets/yalu/lang/zh_tw.json) / [en_us.json](src/main/resources/assets/yalu/lang/en_us.json) 
 
-**核心类：** [Translator.java](src/main/java/com/yalu/addon/Translator.java) + 各 Mixin（ModuleMixin、SettingMixin 等）
+**核心类：** [Translator.java](src/main/java/com/yalu/addon/Translator.java) + 各 Mixin（ModuleMixin、SettingMixin、CategoryMixin、TabMixin 等）
 
-**原理：** 通过 Minecraft 的 `ResourceManager` 加载标准 JSON 语言文件，建立 `key → 翻译` 的 HashMap。各类 Mixin 在对象初始化时调用 `TRANSLATOR.Translate(key, fallbackName)` 替换字段（如 `title`、`description`）。
+**原理：** 通过 Minecraft 的 `ResourceManager` 加载标准 JSON 语言文件，建立 `key → 翻译` 的 HashMap。各类 Mixin 在对象初始化时调用 `TRANSLATOR.Translate(key, fallbackName)` 替换字段（如 `title`、`description`、`name`）。
 
 **覆盖范围：**
-- 模块名 / 模块描述（`Module.Meteor.Xxx`）
-- 设置名 / 设置描述（`Setting.Meteor.Xxx`）
-- 分类、标签页等静态资源
+- 模块名 / 模块描述（`Module.Meteor.Xxx`）— 初始化 + 切换语言
+- 设置名 / 设置描述（`Setting.Meteor.Xxx`）— 初始化 + 切换语言
+- 设置分组名（`Module.Meteor.Xxx.general.name`）— 初始化 + 切换语言
+- 分类名（`Category.Meteor.combat`）— 初始化 + 切换语言
+- 标签页名（`Tab.Meteor.modules`）— 初始化 + 切换语言
 
 **多插件前缀支持：** `ModuleMixin` 的 `@Inject onInit` 从 `addon.name` 动态获取插件前缀（如 `Meteor`、`Meteor+`、`Meteor-I18n-Support`），使各插件的模块/设置翻译能使用各自前缀的 key（`Module.Meteor+.*`、`Module.Meteor-I18n-Support.*` 等）
 
@@ -80,14 +82,17 @@
 ---
 
 #### 实时语言切换（无需重启游戏）
-**核心类：** [LanguageManagerMixin.java](src/main/java/com/yalu/addon/mixin/LanguageManagerMixin.java) + [LanguageRefresh.java](src/main/java/com/yalu/addon/util/LanguageRefresh.java) + [SettingAccessor.java](src/main/java/com/yalu/addon/mixin/SettingAccessor.java)
+**核心类：** [LanguageManagerMixin.java](src/main/java/com/yalu/addon/mixin/LanguageManagerMixin.java) + [LanguageRefresh.java](src/main/java/com/yalu/addon/util/LanguageRefresh.java) + [NameCache.java](src/main/java/com/yalu/addon/util/NameCache.java) + [SettingAccessor.java](src/main/java/com/yalu/addon/mixin/SettingAccessor.java)
 
 **原理：** `LanguageManagerMixin` 注入 `LanguageManager.setSelected()` 的 TAIL，在玩家切换语言后依次执行：
 1. `UniversalLangLoader.reload()` — 按新语言重新加载 universal 替换表
-2. `LanguageRefresh.applyAll()` — 遍历所有已注册的 Module / SettingGroup / Setting / Category / Tab，使用原始英文名作为 key 重新查询 TRANSLATOR 并更新 title/description 字段
+2. `LanguageRefresh.applyAll()` — 遍历所有已注册的 Module / SettingGroup / Setting / Category / Tab，使用原始英文名作为 key 重新查询 TRANSLATOR 并更新字段
 
 **原始名称找回策略：**
-- Module.name / Category.name / Tab.name — 始终保持英文，直接用作翻译 key
+- Module.name — 始终保持英文，直接用作翻译 key
+- Category — 通过 `NameCache.category()` 缓存原始英文名
+- Tab — 通过 `NameCache.tab()` 缓存原始英文名
+- SettingGroup — 通过 `NameCache.group()` 缓存原始英文名
 - Setting — 通过 `SettingAccessor.getName()` Mixin Accessor 读取 `name` 字段（未被翻译的原始英文）
 
 

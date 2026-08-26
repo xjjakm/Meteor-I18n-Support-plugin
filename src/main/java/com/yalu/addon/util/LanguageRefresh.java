@@ -1,10 +1,6 @@
 package com.yalu.addon.util;
 
-import com.yalu.addon.mixin.CategoryAccessor;
-import com.yalu.addon.mixin.ModuleAccessor;
-import com.yalu.addon.mixin.SettingAccessor;
-import com.yalu.addon.mixin.SettingGroupAccessor;
-import com.yalu.addon.mixin.TabAccessor;
+import com.yalu.addon.mixin.*;
 import meteordevelopment.meteorclient.gui.tabs.Tab;
 import meteordevelopment.meteorclient.gui.tabs.Tabs;
 import meteordevelopment.meteorclient.settings.Setting;
@@ -14,9 +10,7 @@ import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import org.slf4j.Logger;
 
-import static com.yalu.addon.TranslateAddon.LOG;
-import static com.yalu.addon.TranslateAddon.MC;
-import static com.yalu.addon.TranslateAddon.TRANSLATOR;
+import static com.yalu.addon.TranslateAddon.*;
 
 /**
  * 无需重启就能将所有已经 <init> 过的模块、设置、分类、Tab 等字段
@@ -40,8 +34,13 @@ public final class LanguageRefresh {
             // 2. 重翻译所有 Module
             for (Module module : Modules.get().getAll()) {
                 // module.name 字段永远保持原始英文；title/description 会被翻译。
-                String moduleKey = "Module.Meteor." + module.name;
-                String descKey   = "Module.Meteor." + module.name + ".Description";
+                // 动态获取插件前缀，与 ModuleMixin.onInit 逻辑一致
+                String packageName = module.addon.name.replace(" ", "-");
+                if (packageName.equals("Meteor-Client")) {
+                    packageName = "Meteor";
+                }
+                String moduleKey = "Module." + packageName + "." + module.name;
+                String descKey   = "Module." + packageName + "." + module.name + ".Description";
 
                 String newTitle = TRANSLATOR.Translate(moduleKey, module.name);
                 String newDesc  = TRANSLATOR.Translate(descKey, module.description);
@@ -64,8 +63,8 @@ public final class LanguageRefresh {
                         // Settings
                         for (Setting<?> setting : ((SettingGroupAccessor) group).getSettings()) {
                             String originalSettingName = ((SettingAccessor) setting).getName();
-                            String settingKey   = "Setting.Meteor." + originalSettingName;
-                            String settingDescKey = "Setting.Meteor." + originalSettingName + ".Description";
+                            String settingKey   = "Setting." + packageName + "." + originalSettingName;
+                            String settingDescKey = "Setting." + packageName + "." + originalSettingName + ".Description";
                             String newSettingTitle = TRANSLATOR.Translate(settingKey, originalSettingName);
                             String originalDesc    = setting.description;
                             String newSettingDesc  = TRANSLATOR.Translate(settingDescKey, originalDesc);
@@ -90,8 +89,7 @@ public final class LanguageRefresh {
 
             // 5. 重翻译所有 Tab
             for (Tab tab : Tabs.get()) {
-                String originalName = tab.name;
-                // 用 Tab 的 name 作为 key
+                String originalName = NameCache.tab(tab);
                 String key = "Tab.Meteor." + TransUtil.baseFormat(originalName);
                 String translated = TRANSLATOR.Translate(key, originalName);
                 if (!translated.equals(tab.name)) {
@@ -109,7 +107,11 @@ public final class LanguageRefresh {
     }
 
     private static String getSettingGroupKey(Module module, String groupName) {
-        // 与 trans_engine 保持一致：Module.Meteor.<module>.<group>.name
-        return "Module.Meteor." + module.name + "." + TransUtil.baseFormat(groupName) + ".name";
+        // 与 ModuleMixin.onInit 逻辑一致：动态获取插件前缀
+        String packageName = module.addon.name.replace(" ", "-");
+        if (packageName.equals("Meteor-Client")) {
+            packageName = "Meteor";
+        }
+        return "Module." + packageName + "." + module.name + "." + TransUtil.baseFormat(groupName) + ".name";
     }
 }

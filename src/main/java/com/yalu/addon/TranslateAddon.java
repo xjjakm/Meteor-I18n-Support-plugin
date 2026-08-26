@@ -1,10 +1,9 @@
 package com.yalu.addon;
 
 import com.mojang.logging.LogUtils;
+import com.yalu.addon.mixin.CategoryAccessor;
 import com.yalu.addon.modules.AboutThisPlugin;
-import com.yalu.addon.util.TextReplacement;
-import com.yalu.addon.util.UniversalLangLoader;
-import com.yalu.addon.util.UnknownDump;
+import com.yalu.addon.util.*;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
@@ -18,9 +17,9 @@ import java.util.Set;
 public class TranslateAddon extends MeteorAddon {
     public static final Logger LOG = LogUtils.getLogger();
     public static final String VERSION = "fork-1.1.0";
-    public static final Category CATEGORY = new Category("I18n");
     public static final Minecraft MC = MeteorClient.mc;
     public static final Translator TRANSLATOR = new Translator();
+    public static final Category CATEGORY = new Category("I18n");
 
     @Override
     public void onInitialize() {
@@ -30,6 +29,22 @@ public class TranslateAddon extends MeteorAddon {
         // created during Meteor's PostInit (e.g. ChatUtils prefix) can be translated.
         UniversalLangLoader.reload();
         TextReplacement.setEnabled(true);
+
+        // Translate the I18n category created during <clinit> (when MC was null)
+        if (MC != null && MC.getResourceManager() != null) {
+            TRANSLATOR.reload(MC.getResourceManager());
+            String originalName = NameCache.category(CATEGORY);
+            String key = "Category.Meteor." + TransUtil.baseFormat(originalName);
+            String translated = TRANSLATOR.Translate(key, originalName);
+            if (!translated.equals(originalName)) {
+                ((CategoryAccessor) CATEGORY).setName(translated);
+            }
+
+            // Re-translate all modules, settings, categories, tabs and setting groups.
+            // Some modules may have been constructed before MC was set (during <clinit>),
+            // so their Mixin.onInit could not translate them at that time.
+            LanguageRefresh.applyAll();
+        }
 
         // Modules
         Modules.get().add(new AboutThisPlugin());

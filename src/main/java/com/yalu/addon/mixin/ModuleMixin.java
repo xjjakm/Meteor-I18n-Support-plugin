@@ -1,6 +1,10 @@
 package com.yalu.addon.mixin;
 
+import com.yalu.addon.util.NameCache;
+import com.yalu.addon.util.TransUtil;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
+import meteordevelopment.meteorclient.settings.SettingGroup;
+import meteordevelopment.meteorclient.settings.Settings;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.player.ChatUtils;
 import net.minecraft.ChatFormatting;
@@ -26,19 +30,41 @@ public abstract class ModuleMixin {
     @Shadow
     @Final
     public MeteorAddon addon;
-    @Unique
+    @Shadow
+    @Final
     public String name;
+    @Final
+    @Shadow
+    public Settings settings;
+
     @Inject(method = "<init>*", at = @At("RETURN"))
     public void onInit(CallbackInfo ci){
+        if (this.settings != null) {
+            for (SettingGroup group : this.settings.groups) {
+                NameCache.group(group);
+            }
+        }
+        if (MC == null || MC.getResourceManager() == null) return;
         TRANSLATOR.reload(MC.getResourceManager());
         String PackageName = this.addon.name.replace(" ", "-");
-        if (PackageName.equals("Meteor-Client")){//历史遗留问题,不想改语言文件
+        if (PackageName.equals("Meteor-Client")){
             PackageName = "Meteor";
         }
         String ModuleKey = "Module." + PackageName + "." + this.name;
         String DescriptionKey = "Module." + PackageName + "." + this.name + ".Description";
         this.title = TRANSLATOR.Translate(ModuleKey, this.name);
         this.description = TRANSLATOR.Translate(DescriptionKey,this.description);
+
+        if (this.settings != null) {
+            for (SettingGroup group : this.settings.groups) {
+                String originalGroupName = NameCache.group(group);
+                String groupKey = "Module." + PackageName + "." + this.name + "." + TransUtil.baseFormat(originalGroupName) + ".name";
+                String translatedGroup = TRANSLATOR.Translate(groupKey, originalGroupName);
+                if (!translatedGroup.equals(originalGroupName)) {
+                    ((SettingGroupAccessor) group).setName(translatedGroup);
+                }
+            }
+        }
     }
 
     @Unique

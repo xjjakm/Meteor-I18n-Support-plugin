@@ -29,6 +29,7 @@ public class SettingMixin {
     public String description;
     @Inject(method = "<init>",at = @At("TAIL"))
     public void init(String name, String description, Object defaultValue, Consumer onChanged, Consumer onModuleActivated, IVisible visible, CallbackInfo ci){
+        if (MC == null || MC.getResourceManager() == null) return;
         TRANSLATOR.reload(MC.getResourceManager());
 
         String classname = this.getClass().getName();

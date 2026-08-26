@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_25",
   "client": [
     "CategoryAccessor",
+    "CategoryMixin",
     "ChatUtilsMixin",
     "ChatUtilsPrefixMixin",
     "CommandAccessor",
@@ -23,6 +24,7 @@
     "SettingGroupAccessor",
     "SettingMixin",
     "TabAccessor",
+    "TabMixin",
     "WButtonMixin",
     "WCatppuccinLabelMixin",
     "WidgetScreenMixin",
@@ -42,6 +44,7 @@
   },
   "mixins": [
     "CategoryAccessor",
+    "CategoryMixin",
     "ChatUtilsMixin",
     "ChatUtilsPrefixMixin",
     "CommandAccessor",
@@ -61,6 +64,7 @@
     "SettingGroupAccessor",
     "SettingMixin",
     "TabAccessor",
+    "TabMixin",
     "WButtonMixin",
     "WCatppuccinLabelMixin",
     "WidgetScreenMixin",
