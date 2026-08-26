@@ -1,12 +1,10 @@
 package com.yalu.addon.mixin;
 
+import meteordevelopment.meteorclient.addons.MeteorAddon;
 import meteordevelopment.meteorclient.systems.modules.Module;
-import meteordevelopment.meteorclient.utils.player.ChatUtils;
-import net.minecraft.ChatFormatting;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static com.yalu.addon.TranslateAddon.MC;
@@ -22,64 +20,21 @@ public abstract class ModuleMixin {
     @Shadow
     @Final
     public String description;
+    @Shadow
+    @Final
+    public MeteorAddon addon;
     @Unique
     public String name;
     @Inject(method = "<init>*", at = @At("RETURN"))
     public void onInit(CallbackInfo ci){
         TRANSLATOR.reload(MC.getResourceManager());
-        String ModuleKey = "Module.Meteor." + this.name;
-        String DescriptionKey = "Module.Meteor." + this.name + ".Description";
+        String PackageName = this.addon.name.replace(" ", "-");
+        if (PackageName.equals("Meteor-Client")){//历史遗留问题,不想改语言文件
+            PackageName = "Meteor";
+        }
+        String ModuleKey = "Module." + PackageName + "." + this.name;
+        String DescriptionKey = "Module." + PackageName + "." + this.name + ".Description";
         this.title = TRANSLATOR.Translate(ModuleKey, this.name);
         this.description = TRANSLATOR.Translate(DescriptionKey,this.description);
-    }
-
-    @Unique
-    private static boolean isZhCn() {
-        try {
-            String lang = MC.getLanguageManager().getSelected();
-            return lang != null && lang.toLowerCase().equals("zh_cn");
-        } catch (Exception ignored) {
-            return false;
-        }
-    }
-
-    @Unique
-    private static boolean isZhTw() {
-        try {
-            String lang = MC.getLanguageManager().getSelected();
-            return lang != null && lang.toLowerCase().equals("zh_tw");
-        } catch (Exception ignored) {
-            return false;
-        }
-    }
-
-    @Redirect(method = "sendToggledMsg", at = @At(value = "INVOKE", target = "Lmeteordevelopment/meteorclient/utils/player/ChatUtils;sendMsg(ILnet/minecraft/ChatFormatting;Ljava/lang/String;[Ljava/lang/Object;)V"))
-    private void redirectToggledMsg(int id, ChatFormatting color, String message, Object... args) {
-        Object[] newArgs = new Object[args.length];
-        for (int i = 0; i < args.length; i++) {
-            if (args[i] instanceof String s) {
-                if (isZhCn()) {
-                    if (s.equals(ChatFormatting.GREEN + "on")) {
-                        newArgs[i] = ChatFormatting.GREEN + "开启";
-                        continue;
-                    } else if (s.equals(ChatFormatting.RED + "off")) {
-                        newArgs[i] = ChatFormatting.RED + "关闭";
-                        continue;
-                    }
-                } else if (isZhTw()) {
-                    if (s.equals(ChatFormatting.GREEN + "on")) {
-                        newArgs[i] = ChatFormatting.GREEN + "開啟";
-                        continue;
-                    } else if (s.equals(ChatFormatting.RED + "off")) {
-                        newArgs[i] = ChatFormatting.RED + "關閉";
-                        continue;
-                    }
-                }
-                newArgs[i] = s;
-            } else {
-                newArgs[i] = args[i];
-            }
-        }
-        ChatUtils.sendMsg(id, color, message, newArgs);
     }
 }
