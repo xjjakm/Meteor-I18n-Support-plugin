@@ -3310,5 +3310,13 @@
   "Setting.Meteor.forward-multiplier": "前進倍數",
   "Setting.Meteor.forward-multiplier.Description": "",
   "Setting.Meteor.sideways-multiplier": "側移倍數",
-  "Setting.Meteor.sideways-multiplier.Description": ""
+  "Setting.Meteor.sideways-multiplier.Description": "",
+  "Module.Meteor.custom-blocks": "自定義方塊",
+  "Module.Meteor.custom-blocks.Description": "在世界中放置自定義方塊，是全息投影的擴充套件。",
+  "Module.Meteor.auto-accept": "自動接受",
+  "Module.Meteor.auto-accept.Description": "自動接受傳入的傳送請求。",
+  "Module.Meteor.safe-mine": "安全挖掘",
+  "Module.Meteor.safe-mine.Description": "保護你免受熔岩傷害。",
+  "Module.Meteor.anti-bot": "反機器人",
+  "Module.Meteor.anti-bot.Description": "移除機器人。"
 }

@@ -22,7 +22,7 @@
 ### 原理
 - Meteor本体的语言文件是通过硬编码的方式实现的，即在代码中直接写死了所有文字。
 
-- 本分支有三套翻译方式（现不用重启游戏就可以翻译了）
+- 本分支有三套翻译方式
 
 #### 第一套：Translator 语言文件系统（标准 key-value，分支最早的翻译模式）
 **文件：** [zh_cn.json](file:///e:/Meteor-I18n-Support-plugin-chxjj/src/main/resources/assets/yalu/lang/zh_cn.json) / [zh_tw.json](file:///e:/Meteor-I18n-Support-plugin-chxjj/src/main/resources/assets/yalu/lang/zh_tw.json) / [en_us.json](file:///e:/Meteor-I18n-Support-plugin-chxjj/src/main/resources/assets/yalu/lang/en_us.json) 

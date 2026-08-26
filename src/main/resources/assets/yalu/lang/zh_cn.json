@@ -3310,5 +3310,13 @@
   "Setting.Meteor.tab-icons": "标签页图标",
   "Setting.Meteor.tab-icons.Description": "在顶栏标签页旁显示图标。",
   "Setting.Meteor.indent-settings": "缩进设置",
-  "Setting.Meteor.indent-settings.Description": "对有条件可见性的设置进行缩进，类似树形视图。"
+  "Setting.Meteor.indent-settings.Description": "对有条件可见性的设置进行缩进，类似树形视图。",
+  "Module.Meteor.custom-blocks": "自定义方块",
+  "Module.Meteor.custom-blocks.Description": "在世界中放置自定义方块，是全息投影的扩展。",
+  "Module.Meteor.auto-accept": "自动接受",
+  "Module.Meteor.auto-accept.Description": "自动接受传入的传送请求。",
+  "Module.Meteor.safe-mine": "安全挖掘",
+  "Module.Meteor.safe-mine.Description": "保护你免受熔岩伤害。",
+  "Module.Meteor.anti-bot": "反机器人",
+  "Module.Meteor.anti-bot.Description": "移除机器人。"
 }

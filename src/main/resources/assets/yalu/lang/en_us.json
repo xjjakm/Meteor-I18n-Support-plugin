@@ -3310,5 +3310,13 @@
   "Setting.Meteor.tab-icons": "tab-icons",
   "Setting.Meteor.tab-icons.Description": "Displays icons next to tabs in the top bar.",
   "Setting.Meteor.indent-settings": "indent-settings",
-  "Setting.Meteor.indent-settings.Description": "Indents setting that have conditional visibility like in a Tree View."
+  "Setting.Meteor.indent-settings.Description": "Indents setting that have conditional visibility like in a Tree View.",
+  "Module.Meteor.custom-blocks": "custom-blocks",
+  "Module.Meteor.custom-blocks.Description": "Place custom blocks in world, extension for Holograms",
+  "Module.Meteor.auto-accept": "auto-accept",
+  "Module.Meteor.auto-accept.Description": "Automatically accepts incoming teleport requests.",
+  "Module.Meteor.safe-mine": "safe-mine",
+  "Module.Meteor.safe-mine.Description": "Save you from lava.",
+  "Module.Meteor.anti-bot": "anti-bot",
+  "Module.Meteor.anti-bot.Description": "Remove bots."
 }
