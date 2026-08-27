@@ -4,10 +4,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
+import net.minecraft.locale.Language;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.resources.Identifier;
-import net.minecraft.locale.Language;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -15,24 +17,35 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.BiConsumer;
 
 public class Translator {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Translator.class);
     private final JsonObject langJson = new JsonObject();
     private Map<String, String> currentLangStrings;
+    /** 记录已加载语言代码的签名，语言未变化时跳过重复 reload */
+    private String loadedLangSignature;
+
     public String Translate(String key,String name) {
+        if (this.currentLangStrings == null) {
+            return name;
+        }
         String value = this.currentLangStrings.get(key);
         if(value != null){
             return value;
         }else{
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             langJson.addProperty(key,name);
+            LOGGER.info("[MeteorTranslation] 未翻译键已写入 lang.json: {}", key);
             Path path = Paths.get("lang.json");
             try (BufferedWriter writer = Files.newBufferedWriter(path)) {
                 gson.toJson(langJson, writer);
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.error("[MeteorTranslation] 写入 lang.json 失败: {}", e.toString());
             }
         }
         return name;
@@ -41,27 +54,64 @@ public class Translator {
 
     public void reload(ResourceManager manager)
     {
+        reload(manager, false);
+    }
+
+    /** 强制重新加载标准语言文件，绕过幂等去重（用于 /meteori18n reload 手动重载）。 */
+    public void forceReload(ResourceManager manager)
+    {
+        reload(manager, true);
+    }
+
+    private void reload(ResourceManager manager, boolean force)
+    {
+        Iterable<String> langCodes = getCurrentLangCodes();
+
+        // 幂等去重：启动时大量 Module/Setting 构造函数都会触发 reload，
+        // 而语言代码未变化时无需重新读文件，避免日志刷屏与重复 IO。
+        // force=true 时（手动 reload 命令）跳过该判断，始终重新读取。
+        String signature = langCodeSignature(langCodes);
+        if (!force && signature.equals(loadedLangSignature)) return;
+
         HashMap<String, String> currentLangStrings = new HashMap<>();
         //从mixin获取管理器然后获取当前语言的语言代码，然后加载翻译文件
 //		//这个方法会将语言文件内的键值对赋值给currentLangStrings（这是个HASHMAP（键值对））
-        loadTranslations(manager, getCurrentLangCodes(),
+        loadTranslations(manager, langCodes,
             currentLangStrings::put);
         //设置不可变的map 也就是说现在这个currentLangStrings就是当前语言的键值对翻译了
         this.currentLangStrings =
             Collections.unmodifiableMap(currentLangStrings);
+        this.loadedLangSignature = signature;
+    }
+
+    private static String langCodeSignature(Iterable<String> langCodes) {
+        StringBuilder sb = new StringBuilder();
+        for (String code : langCodes) {
+            sb.append(code).append(';');
+        }
+        return sb.toString();
     }
 
     private Iterable<String> getCurrentLangCodes() {
         // Weird bug: Some users have their language set to "en_US" instead of
         // "en_us.json" for some reason. Last seen in 1.21.
         String mainLangCode = Minecraft.getInstance().getLanguageManager().getSelected().toLowerCase();
+        // 剥离可能带有的 .json 后缀，避免与 loadTranslations 追加的后缀重复
+        mainLangCode = stripJsonSuffix(mainLangCode);
 
         ArrayList<String> langCodes = new ArrayList<>();
-        langCodes.add("en_us.json");
-        if(!"en_us.json".equals(mainLangCode))
+        langCodes.add("en_us");
+        if(!"en_us".equals(mainLangCode))
             langCodes.add(mainLangCode);
 
         return langCodes;
+    }
+
+    private static String stripJsonSuffix(String langCode) {
+        if (langCode.endsWith(".json")) {
+            return langCode.substring(0, langCode.length() - 5);
+        }
+        return langCode;
     }
 
     private void loadTranslations(ResourceManager manager,
@@ -76,17 +126,17 @@ public class Translator {
             //注册语言ID
             Identifier langId = Identifier.fromNamespaceAndPath("yalu", langFilePath);
 
+            int[] count = {0};
             for(Resource resource : manager.getResourceStack(langId))
                 try(InputStream stream = resource.open())
                 {
-                    Language.loadFromJson(stream, entryConsumer);
+                    Language.loadFromJson(stream, (key, value) -> { entryConsumer.accept(key, value); count[0]++; });
 
                 }catch(IOException e)
                 {
-                    System.out.println("Failed to load translations for "
-                        + langCode + " from pack " + resource.sourcePackId());
-                    e.printStackTrace();
+                    LOGGER.error("[MeteorTranslation] Failed to load translations for {} from pack {}", langCode, resource.sourcePackId(), e);
                 }
+            LOGGER.info("[MeteorTranslation] Loaded {} standard translations for {}", count[0], langCode);
         }
     }
 }

@@ -29,11 +29,20 @@ public final class LanguageRefresh {
     private LanguageRefresh() {}
 
     public static void applyAll() {
+        applyAll(false);
+    }
+
+    /** @param forceTranslatorReload 强制重载 Translator 标准语言文件，绕过幂等去重（手动 reload 用） */
+    public static void applyAll(boolean forceTranslatorReload) {
         try {
             if (MC == null || MC.getResourceManager() == null) return;
 
             // 1. 重新加载 Translator（标准语言文件 zh_cn.json / en_us.json 等）
-            TRANSLATOR.reload(MC.getResourceManager());
+            if (forceTranslatorReload) {
+                TRANSLATOR.forceReload(MC.getResourceManager());
+            } else {
+                TRANSLATOR.reload(MC.getResourceManager());
+            }
 
             int modulesDone = 0, settingsDone = 0, groupsDone = 0, categoriesDone = 0, tabsDone = 0;
 

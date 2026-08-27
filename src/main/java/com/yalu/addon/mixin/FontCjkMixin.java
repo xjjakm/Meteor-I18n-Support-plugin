@@ -1,7 +1,10 @@
 package com.yalu.addon.mixin;
 
+import com.mojang.logging.LogUtils;
 import org.lwjgl.BufferUtils;
+import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
@@ -19,10 +22,16 @@ import java.nio.channels.FileChannel;
 @Mixin(targets = "meteordevelopment.meteorclient.renderer.text.Font", remap = false)
 public class FontCjkMixin {
 
+@Unique
+private static final Logger LOG = LogUtils.getLogger();
+@Unique
 private static ByteBuffer cjkBuffer;
+@Unique
 private static boolean cjkTried;
 
-@ModifyVariable(method = "<init>", at = @At("HEAD"), argsOnly = true)
+// 按参数下标而不是变量名定位：新 Meteor 字节码未保留局部变量名 "buffer"，
+// 用 name 匹配会扫到 0 个目标导致注入失败。实例方法 <init> 中 index 0 = this、index 1 = buffer。
+@ModifyVariable(method = "<init>", at = @At("HEAD"), argsOnly = true, index = 1)
 private static ByteBuffer swapBuffer(ByteBuffer original) {
 if (cjkBuffer != null) return cjkBuffer;
 if (cjkTried) return original;
@@ -46,7 +55,7 @@ try (FileChannel ch = new FileInputStream(f).getChannel()) {
 cjkBuffer = BufferUtils.createByteBuffer((int) ch.size());
 ch.read(cjkBuffer);
 cjkBuffer.flip();
-System.out.println("[MeteorTranslation] Font CJK swap: " + path);
+LOG.info("[MeteorTranslation] Font CJK swap: " + path);
 return cjkBuffer;
 } catch (Exception ignored) {}
 }

@@ -9,7 +9,7 @@
 #### 这个复刻添加了繁體中文(台灣)语言支持,且只支持最新版本
 ### 怎么用？
 1. 从 Actions 或者 Releases 中下载对应正确mc版本的mod
-2. 下载对应版本的 meteor 本体
+2. 下载对应版本的 meteor 本体(还有fabric api（模组版本 ≥26.2-5）)
 3. 把这个mod添加到mods文件夹
 
 ### 注意事项
@@ -20,12 +20,12 @@
 - ！！！本插件不会默认适配已经汉化过的Meteor客户端
 - ！！！[MeteorCN](https://github.com/dingzhen-vape/MeteorCN)不会更新了
 
-### 原理
+### 特性
 - Meteor本体的语言文件是通过硬编码的方式实现的，即在代码中直接写死了所有文字。
 
 - 本分支有三套翻译方式
 
-#### 第一套：Translator 语言文件系统（标准 key-value，分支最早的翻译模式）
+#### 第一套：Translator 语言文件系统（标准 key-value，优先级最高）
 **文件：** [zh_cn.json](src/main/resources/assets/yalu/lang/zh_cn.json) / [zh_tw.json](src/main/resources/assets/yalu/lang/zh_tw.json) / [en_us.json](src/main/resources/assets/yalu/lang/en_us.json) 
 
 **核心类：** [Translator.java](src/main/java/com/yalu/addon/Translator.java) + 各 Mixin（ModuleMixin、SettingMixin、CategoryMixin、TabMixin 等）
@@ -98,8 +98,25 @@
 - SettingGroup — 通过 `NameCache.group()` 缓存原始英文名
 - Setting — 通过 `SettingAccessor.getName()` Mixin Accessor 读取 `name` 字段（未被翻译的原始英文）
 
-
 - 现已支持自定义字体中文渲染
+
+---
+
+### 聊天命令（这里使用Fabric API）
+**核心类：** [MeteorI18nCommand.java](src/main/java/com/yalu/addon/commands/MeteorI18nCommand.java)（在 [TranslateAddon.onInitialize](src/main/java/com/yalu/addon/TranslateAddon.java) 通过 `ClientCommandRegistrationCallback` 注册）
+
+提供 `/meteori18n` 命令，直接输入会显示帮助信息；所有输出（含前缀 `[彗星翻译]`）均从标准语言文件 `meteori18n.*` 键读取，随当前语言本地化，不经过 Meteor 聊天管线：
+
+| 子命令 | 说明 |
+| ------ | ---- |
+| `/meteori18n` / `/meteori18n help` | 显示帮助信息 |
+| `/meteori18n reload` | 与游戏内切换语言完全一致地重新加载并应用三套翻译（强制重载标准语言文件，绕过幂等去重，可按需热加载游戏外修改的 `zh_cn.json`），并重建聊天前缀、刷新打开的 GUI/HUD 编辑器 |
+| `/meteori18n export` | 导出全部模块的翻译键值对，输出规范 JSON 到 `.minecraft/meteor-client/meteor-translation-addon/meteor-i18n-export.json`，聊天栏提示导出条数与路径 |
+
+**说明：**
+- 建议在语言为英文时导出
+- 导出不按 addon 过滤，涵盖所有模块（含第三方）及 HUD Preset / Tab / 独立 Settings 的翻译键值对
+- 聊天输出统一走 `meteori18n.*` 标准语言键（`export.success` / `export.empty` / `reload.success` 等），不再硬编码中文
 
 ### 待办事项
 - 不知道

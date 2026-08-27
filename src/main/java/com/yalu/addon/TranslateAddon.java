@@ -1,6 +1,7 @@
 package com.yalu.addon;
 
 import com.mojang.logging.LogUtils;
+import com.yalu.addon.commands.MeteorI18nCommand;
 import com.yalu.addon.mixin.CategoryAccessor;
 import com.yalu.addon.modules.AboutThisPlugin;
 import com.yalu.addon.util.*;
@@ -9,6 +10,7 @@ import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.Minecraft;
 import org.slf4j.Logger;
 
@@ -49,6 +51,10 @@ public class TranslateAddon extends MeteorAddon {
         // Modules
         Modules.get().add(new AboutThisPlugin());
 
+        // 使用 Fabric Command API 挂载 /meteori18n 导出命令
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
+            dispatcher.register(MeteorI18nCommand.build()));
+
         // Always dump collected unknown text when the client stops, even if
         // module deactivate is not reliably called during shutdown.
         Runtime.getRuntime().addShutdownHook(new Thread(this::dumpUnknownText));
@@ -78,6 +84,6 @@ public class TranslateAddon extends MeteorAddon {
 
     @Override
     public GithubRepo getRepo() {
-        return new GithubRepo("dingzhen-vape", "Meteor-I18n-Support-plugin");
+        return new GithubRepo("xjjakm", "Meteor-I18n-Support-plugin");
     }
 }

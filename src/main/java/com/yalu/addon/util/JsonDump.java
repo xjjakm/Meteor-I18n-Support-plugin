@@ -1,5 +1,6 @@
 package com.yalu.addon.util;
 
+import com.mojang.logging.LogUtils;
 import com.yalu.addon.mixin.SettingGroupAccessor;
 import com.yalu.addon.util.trans_engine.AbstractTransEngine;
 import meteordevelopment.meteorclient.gui.GuiThemes;
@@ -13,11 +14,12 @@ import meteordevelopment.meteorclient.systems.hud.Hud;
 import meteordevelopment.meteorclient.systems.hud.HudElementInfo;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
-import meteordevelopment.meteorclient.utils.player.ChatUtils;
+import net.minecraft.client.Minecraft;
+import org.slf4j.Logger;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 public class JsonDump {
@@ -28,56 +30,80 @@ public class JsonDump {
 
     private static final JsonDump INSTANCE = new JsonDump();
 
+    private static final Logger LOGGER = LogUtils.getLogger();
+
     //    private LinkedHashSet<String> keySet = new LinkedHashSet<>();
     private LinkedHashMap<String, String> entMap = new LinkedHashMap<>();
     private BufferedWriter dumpBW;
-
-    /** Translation 模块未合并，使用默认导出路径 */
-    private static final String DEFAULT_DUMP_PATH = "meteor-i18n-export.json";
-    /** 默认包含 meteor 主客户端 与 当前 addon 的模块 */
-    private static final List<String> DEFAULT_MODULE_ADDONS = List.of("meteor", "yalu");
-
-    private String dumpPath() {
-        return DEFAULT_DUMP_PATH;
-    }
 
     private boolean dumpText() {
         return true;
     }
 
-    private List<String> translationAddons() {
-        return DEFAULT_MODULE_ADDONS;
+    private String dumpPath() {
+        // 输出到 .minecraft 下的固定绝对路径，与 unknown.json 同目录保持统一
+        java.nio.file.Path mcDir = Minecraft.getInstance().gameDirectory.toPath();
+        return mcDir.resolve("meteor-client/meteor-translation-addon/meteor-i18n-export.json").toString();
+    }
+
+    /** 供命令层获取导出路径（用于本地化导出的成功提示）。 */
+    public String dumpPathExposed() {
+        return dumpPath();
     }
 
 
-    public void write(AbstractTransEngine engine, AbstractTransEngine engine2) {
+    /**
+     * 导出所有翻译键值对到语言文件。
+     * @return 成功导出的翻译条数；无数据时返回 0。
+     * @throws RuntimeException 导出失败时抛出（由调用方决定如何提示）。
+     */
+    public int write(AbstractTransEngine engine, AbstractTransEngine engine2) {
 
         dump2Set(engine, engine2);
 
+        if (entMap.isEmpty()) {
+            LOGGER.info("[MeteorTranslation] 无翻译数据可导出，跳过 (lang 文件 {})", dumpPath());
+            entMap.clear();
+            return 0;
+        }
+
         try {
             File path = new File(dumpPath());
-            if (!path.exists() & !(path.createNewFile())) {
-                ChatUtils.warning("导出失败：无法创建导出文件");
+            File parent = path.getParentFile();
+            if (parent != null && !parent.exists() && !parent.mkdirs()) {
+                LOGGER.error("[MeteorTranslation] 导出失败：无法创建导出目录 {}", parent);
                 entMap.clear();
-                return;
+                throw new RuntimeException("无法创建导出目录 " + parent);
             }
-            dumpBW = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(path, false), StandardCharsets.UTF_8));
+            if (path.exists() || path.createNewFile()) {
 
-            for (Map.Entry<String, String> entry : entMap.entrySet()) {
-                dumpBW.write("\"" + entry.getKey() + "\"" + ":" + "\"" + TransUtil.formatValue(entry.getValue()) + "\"" + ",");
+                // 规范 JSON：构建对象后由 Gson 序列化，保证键值转义正确
+                com.google.gson.JsonObject jsonObj = new com.google.gson.JsonObject();
+                for (Map.Entry<String, String> entry : entMap.entrySet()) {
+                    jsonObj.addProperty(entry.getKey(), entry.getValue());
+                }
+                String json = new com.google.gson.GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(jsonObj);
+
+                dumpBW = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(path, false), StandardCharsets.UTF_8));
+                dumpBW.write(json);
                 dumpBW.newLine();
+
+                dumpBW.flush();
+                dumpBW.close();
+
+                int count = entMap.size();
+                LOGGER.info("[MeteorTranslation] 已导出 {} 条翻译到 lang 文件 {} (作为 json: true)", count, dumpPath());
+                entMap.clear();
+                return count;
+            } else {
+                entMap.clear();
+                throw new RuntimeException("无法创建导出文件 " + path);
             }
-
-            dumpBW.flush();
-            dumpBW.close();
-
-            ChatUtils.info("已导出 %d 条翻译到 %s", entMap.size(), dumpPath());
-
         } catch (IOException e) {
-            ChatUtils.error(e.getMessage());
+            LOGGER.error("[MeteorTranslation] 导出 lang 文件 {} 失败: {}", dumpPath(), e.getMessage());
             entMap.clear();
-            return;
+            throw new RuntimeException(e);
         } finally {
             try {
                 if (dumpBW != null)
@@ -85,18 +111,12 @@ public class JsonDump {
             } catch (IOException ignore) {
             }
         }
-
-
-        entMap.clear();
     }
 
     private void dump2Set(AbstractTransEngine engine, AbstractTransEngine engine2) {
         boolean dumpText = dumpText();
         for (Module module : Modules.get().getAll()) {
-            String addonName = TransUtil.getAddonName(module);
-            if (!translationAddons().contains(addonName)) continue;
-            //插件过滤
-
+            // 不再按 addon 过滤，导出所有模块的翻译
 
             String nameKey = engine.getModuleNameKey(module);
             addEntry(nameKey, dumpText ? engine2.transModuleName(module) : module.name);

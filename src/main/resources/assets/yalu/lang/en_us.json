@@ -3914,5 +3914,17 @@
   "Setting.Meteor.macros": "macros",
   "Setting.Meteor.macros.Description": "Whether the profile should save macros.",
   "Setting.Meteor.waypoints": "waypoints",
-  "Setting.Meteor.waypoints.Description": "Whether the profile should save waypoints."
+  "Setting.Meteor.waypoints.Description": "Whether the profile should save waypoints.",
+  "meteori18n.prefix": "MeteorTranslation",
+  "meteori18n.help": "Meteor I18n help",
+  "meteori18n.help.root": "/meteori18n - Display help",
+  "meteori18n.help.help": "/meteori18n help - Display help",
+  "meteori18n.help.reload": "/meteori18n reload - Reload and apply translations",
+  "meteori18n.help.export": "/meteori18n export - Export translation language file",
+  "meteori18n.reload.success": "Translation files reloaded.",
+  "meteori18n.reload.error": "Failed to reload translation files.",
+  "meteori18n.export.error": "Failed to export translation file.",
+  "meteori18n.export.success": "Exported %s translations to %s.",
+  "meteori18n.export.empty": "No translation data to export, skipped.",
+  "modmenu.descriptionTranslation.meteor-i18n-addon": "Adds localization language file support to the Meteor client."
 }

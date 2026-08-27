@@ -3914,5 +3914,17 @@
   "Setting.Meteor.macros": "宏",
   "Setting.Meteor.macros.Description": "该配置方案是否应保存宏。",
   "Setting.Meteor.waypoints": "航点",
-  "Setting.Meteor.waypoints.Description": "该配置方案是否应保存航点。"
+  "Setting.Meteor.waypoints.Description": "该配置方案是否应保存航点。",
+  "meteori18n.prefix": "彗星翻译",
+  "meteori18n.help": "Meteor I18n 帮助",
+  "meteori18n.help.root": "/meteori18n - 显示帮助信息",
+  "meteori18n.help.help": "/meteori18n help - 显示帮助信息",
+  "meteori18n.help.reload": "/meteori18n reload - 重新加载并应用翻译",
+  "meteori18n.help.export": "/meteori18n export - 导出翻译语言文件",
+  "meteori18n.reload.success": "翻译文件已重载",
+  "meteori18n.reload.error": "重载翻译文件失败",
+  "meteori18n.export.error": "导出翻译文件失败",
+  "meteori18n.export.success": "已导出 %s 条翻译到 %s",
+  "meteori18n.export.empty": "无翻译数据可导出，已跳过",
+  "modmenu.descriptionTranslation.meteor-i18n-addon": "为彗星端添加本地化语言文件支持"
 }

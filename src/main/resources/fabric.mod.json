@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "addon-template",
+  "id": "meteor-i18n-addon",
   "version": "${version}",
   "name": "Meteor I18n Support",
   "description": "为Meteor添加国际化支持",
@@ -35,6 +35,7 @@
   "depends": {
     "java": ">=25",
     "minecraft": ">=26.1",
-    "meteor-client": "*"
+    "meteor-client": "*",
+    "fabric-api": "*"
   }
 }
