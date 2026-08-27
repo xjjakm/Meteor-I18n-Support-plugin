@@ -4,6 +4,7 @@
 
 ![repo-size](https://img.shields.io/github/repo-size/xjjakm/Meteor-I18n-Support-plugin) 
 ![Downloads](https://img.shields.io/github/downloads/xjjakm/Meteor-I18n-Support-plugin/total)
+<img src="https://img.shields.io/github/languages/code-size/xjjakm/Meteor-I18n-Support-plugin" alt="GitHub code size in bytes"/>
 #### 这个插件为Meteor本体添加了lang语言文件支持，使大部分文字可以进行非硬编码更改
 #### 这个复刻添加了繁體中文(台灣)语言支持,且只支持最新版本
 ### 怎么用？

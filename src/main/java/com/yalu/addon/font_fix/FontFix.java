@@ -1,10 +1,8 @@
 package com.yalu.addon.font_fix;
 
-import com.mojang.blaze3d.GpuFormat;
-import com.mojang.blaze3d.textures.FilterMode;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import meteordevelopment.meteorclient.renderer.MeshBuilder;
-import meteordevelopment.meteorclient.renderer.Texture;
+import meteordevelopment.meteorclient.renderer.text.Font;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.stb.*;
@@ -15,8 +13,7 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FontFix {
-public Texture texture;
+public class FontFix extends Font {
 private final int height;
 private final float scale;
 private final float ascent;
@@ -24,27 +21,29 @@ private final Int2ObjectOpenHashMap<CharData> charMap = new Int2ObjectOpenHashMa
 private final static int SIZE = 2048;
 
 private final ByteBuffer buffer;
-private final STBTTFontinfo fontInfo;
-private final ByteBuffer bitmap;
+    private final ByteBuffer bitmap;
 private final STBTTPackContext packContext;
 
 private long loadTimer = 0;
 private int loadCount = 0;
-private static final int LOAD_SPEED_LIMIT = 7;
+/**
+ * 自定义字体中 CJK 字符数量多，7/100ms 的上限会让中文叠加层长时间空帧。
+ * 调整为：每 100ms 内最多打包 128 个新字符，足以覆盖一次 HUD 刷新出现的所有 CJK 字符。
+ */
+private static final int LOAD_SPEED_LIMIT = 128;
 
 public FontFix(ByteBuffer buffer, int height) {
+super(buffer, height);
 this.buffer = buffer;
 this.height = height;
 
-fontInfo = STBTTFontinfo.create();
+    STBTTFontinfo fontInfo = STBTTFontinfo.create();
 STBTruetype.stbtt_InitFont(fontInfo, buffer);
 
 bitmap = BufferUtils.createByteBuffer(SIZE * SIZE);
 packContext = STBTTPackContext.create();
 STBTruetype.stbtt_PackBegin(packContext, bitmap, SIZE, SIZE, 0, 1);
 
-texture = new Texture(SIZE, SIZE, GpuFormat.R8_UNORM, FilterMode.LINEAR, FilterMode.LINEAR);
-texture.upload(bitmap);
 scale = STBTruetype.stbtt_ScaleForPixelHeight(fontInfo, height);
 
 try (MemoryStack stack = MemoryStack.stackPush()) {
@@ -98,53 +97,73 @@ pc.xadvance()
 }
 
 private void createTexture() {
-texture = new Texture(SIZE, SIZE, GpuFormat.R8_UNORM, FilterMode.LINEAR, FilterMode.LINEAR);
+// 复用父类 Font 的 texture：upload 会把字形位图整体（覆盖式）写入纹理，
+// 因此 HUD 通过 font.texture 读到的父纹理始终是包含 CJK 的最新字形图。
 texture.upload(bitmap);
 }
 
 public double getWidth(String string, int length) {
 double width = 0;
-if (tryLoadString(string)) return width;
-for (int i = 0; i < length; i++) {
-CharData c = charMap.get((int) string.charAt(i));
-if (c != null) width += c.xAdvance;
+tryLoadString(string);
+int i = 0;
+int processed = 0;
+float fallbackWidth = height * 0.5f; // 尚未加载字形时，按字符尺寸的 0.5 倍估算宽度以避免布局跳变
+while (i < string.length() && processed < length) {
+    int cp = string.codePointAt(i);
+    int chars = Character.charCount(cp);
+    if (processed + chars <= length) {
+        CharData c = charMap.get(cp);
+        if (c != null) width += c.xAdvance;
+        else width += fallbackWidth;
+    }
+    i += chars;
+    processed += chars;
 }
 return width;
 }
 
 public int getHeight() { return height; }
 
-private boolean tryLoadString(String s) {
-boolean loading = false;
-List<Integer> pts = null;
-for (int i = 0; i < s.length(); i++) {
-int cp = s.charAt(i);
-if (!charMap.containsKey(cp)) {
-if (pts == null) pts = new ArrayList<>();
-pts.add(cp);
-loading = true;
-}
-}
-if (pts != null) loadCharacter(pts);
-return loading;
+/**
+ * 遍历字符串中尚未缓存字形的码位，加入待加载队列。
+ * 与旧实现不同：该方法不再影响上层是否跳过渲染，也就是说，
+ * 即便当前帧触发了新字符打包，已缓存的字符仍然会被正常绘制/宽度测量。
+ */
+private void tryLoadString(String s) {
+    List<Integer> pts = null;
+    int i = 0;
+    while (i < s.length()) {
+        int cp = s.codePointAt(i);
+        if (!charMap.containsKey(cp)) {
+            if (pts == null) pts = new ArrayList<>();
+            pts.add(cp);
+        }
+        i += Character.charCount(cp);
+    }
+    if (pts != null) loadCharacter(pts);
 }
 
 public double render(MeshBuilder mesh, String string, double x, double y, Color color, double s) {
-if (tryLoadString(string)) return x;
+tryLoadString(string);
 y += ascent * this.scale * s;
 
 int len = string.length();
 mesh.ensureCapacity(len * 4, len * 6);
-for (int i = 0; i < len; i++) {
-CharData c = charMap.get((int) string.charAt(i));
-if (c == null) continue;
-mesh.quad(
+int i = 0;
+while (i < len) {
+    int cp = string.codePointAt(i);
+    int chars = Character.charCount(cp);
+    CharData c = charMap.get(cp);
+    if (c != null) {
+        mesh.quad(
 mesh.vec2(x + c.x0 * s, y + c.y0 * s).vec2(c.u0, c.v0).color(color).next(),
 mesh.vec2(x + c.x0 * s, y + c.y1 * s).vec2(c.u0, c.v1).color(color).next(),
 mesh.vec2(x + c.x1 * s, y + c.y1 * s).vec2(c.u1, c.v1).color(color).next(),
 mesh.vec2(x + c.x1 * s, y + c.y0 * s).vec2(c.u1, c.v0).color(color).next()
 );
 x += c.xAdvance * s;
+    }
+    i += chars;
 }
 return x;
 }
