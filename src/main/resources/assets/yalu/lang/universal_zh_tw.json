@@ -2174,6 +2174,7 @@
   "Waterplacedelayinticks": "水放置延遲（刻）",
   "Waypointcoordexploit": "路徑點座標漏洞",
   "Waypoints": "路徑點",
+  "WenQuanYi Micro Hei": "文泉驛微米黑",
   "Weather: ": "天氣：",
   "Website": "網站",
   "When False": "條件為假時",
@@ -2281,5 +2282,6 @@
   "蜘蛛网timer": "蜘蛛網計時器",
   "让你从一个中心主机控制多个Meteor实例。": "讓你從一箇中心主機控制多個Meteor例項。",
   "重置UUID按键绑定": "重置UUID按鍵繫結",
-  "重锤swapping": "重錘切換"
+  "重锤swapping": "重錘切換",
+  "Bound to (highlight)%s(default).": "已繫結至 (highlight)%s(default)。"
 }

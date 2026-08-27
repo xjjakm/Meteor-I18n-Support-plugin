@@ -3906,5 +3906,13 @@
   "Tab.Meteor.hud": "HUD",
   "Tab.Meteor.friends": "好友",
   "Tab.Meteor.macros": "宏",
-  "Tab.Meteor.profiles": "配置方案"
+  "Tab.Meteor.profiles": "配置方案",
+  "Setting.Meteor.load-on-join": "加入時載入",
+  "Setting.Meteor.load-on-join.Description": "加入伺服器時將此配置方案設為啟用狀態的伺服器。",
+  "Setting.Meteor.hud": "HUD",
+  "Setting.Meteor.hud.Description": "該配置方案是否應儲存HUD。",
+  "Setting.Meteor.macros": "巨集",
+  "Setting.Meteor.macros.Description": "該配置方案是否應儲存巨集。",
+  "Setting.Meteor.waypoints": "航點",
+  "Setting.Meteor.waypoints.Description": "該配置方案是否應儲存航點。"
 }

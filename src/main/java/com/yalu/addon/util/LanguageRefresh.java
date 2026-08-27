@@ -1,10 +1,16 @@
 package com.yalu.addon.util;
 
 import com.yalu.addon.mixin.*;
+import meteordevelopment.meteorclient.addons.AddonManager;
+import meteordevelopment.meteorclient.addons.MeteorAddon;
+import meteordevelopment.meteorclient.gui.GuiTheme;
+import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.tabs.Tab;
 import meteordevelopment.meteorclient.gui.tabs.Tabs;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
+import meteordevelopment.meteorclient.settings.Settings;
+import meteordevelopment.meteorclient.systems.hud.Hud;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
@@ -76,6 +82,17 @@ public final class LanguageRefresh {
                 }
             }
 
+            // 3.5 重翻译不属于任何 Module 的独立 Settings（HUD、GUI 主题等）。
+            // 这两种 Settings 不会被遍历 Modules 的循环覆盖，若不在此重翻，
+            // 它们的 Setting.title 会停留在游戏启动时的语言。
+            // onInitialize 阶段可能在 GuiThemes/Hud 初始化前触发（Minecraft.<init> 期间），
+            // 因此对它们的 get() 结果做空判断，避免 NPE 中断后续分类/Tab 的翻译。
+            Hud hud = Hud.get();
+            if (hud != null) translateStandalone(hud.settings);
+
+            GuiTheme guiTheme = GuiThemes.get();
+            if (guiTheme != null) translateStandalone(guiTheme.settings);
+
             // 4. 重翻译所有 Category（包括第三方的）
             for (Category category : Modules.loopCategories()) {
                 String originalName = NameCache.category(category);
@@ -113,5 +130,38 @@ public final class LanguageRefresh {
             packageName = "Meteor";
         }
         return "Module." + packageName + "." + module.name + "." + TransUtil.baseFormat(groupName) + ".name";
+    }
+
+    /**
+     * 重翻译一个独立 Settings 对象中的所有设置（title / description）。
+     * 键名规则与 SettingMixin 保持一致：根据 Setting 的运行时类前缀解析所属 addon，
+     * 生成 "Setting.{pkg}.{name}" 与 "Setting.{pkg}.{name}.Description"。
+     */
+    private static void translateStandalone(Settings settings) {
+        if (settings == null) return;
+        for (SettingGroup group : settings.groups) {
+            for (Setting<?> setting : ((SettingGroupAccessor) group).getSettings()) {
+                String originalName = ((SettingAccessor) setting).getName();
+                String pkg = getSettingPackage(setting);
+                String settingKey = "Setting." + pkg + "." + originalName;
+                String settingDescKey = settingKey + ".Description";
+                ((SettingAccessor) setting).setTitle(
+                    TRANSLATOR.Translate(settingKey, originalName));
+                ((SettingAccessor) setting).setDescription(
+                    TRANSLATOR.Translate(settingDescKey, setting.description));
+            }
+        }
+    }
+
+    /** 与 SettingMixin 相同的 addon 解析逻辑。 */
+    private static String getSettingPackage(Setting<?> setting) {
+        String classname = setting.getClass().getName();
+        for (MeteorAddon addon : AddonManager.ADDONS) {
+            if (classname.startsWith(addon.getPackage())) {
+                String pkg = addon.name.replace(" ", "-");
+                return pkg.equals("Meteor-Client") ? "Meteor" : pkg;
+            }
+        }
+        return "Meteor";
     }
 }

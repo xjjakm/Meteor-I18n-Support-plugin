@@ -3906,5 +3906,13 @@
   "Tab.Meteor.hud": "HUD",
   "Tab.Meteor.friends": "好友",
   "Tab.Meteor.macros": "宏",
-  "Tab.Meteor.profiles": "配置方案"
+  "Tab.Meteor.profiles": "配置方案",
+  "Setting.Meteor.load-on-join": "加入时加载",
+  "Setting.Meteor.load-on-join.Description": "加入服务器时将此配置方案设为激活状态的服务器。",
+  "Setting.Meteor.hud": "HUD",
+  "Setting.Meteor.hud.Description": "该配置方案是否应保存HUD。",
+  "Setting.Meteor.macros": "宏",
+  "Setting.Meteor.macros.Description": "该配置方案是否应保存宏。",
+  "Setting.Meteor.waypoints": "航点",
+  "Setting.Meteor.waypoints.Description": "该配置方案是否应保存航点。"
 }

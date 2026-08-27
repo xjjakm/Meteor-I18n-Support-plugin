@@ -1708,6 +1708,7 @@
   "Select Enchantments": "选择附魔",
   "Select File": "选择文件",
   "Select Font": "选择字体",
+  "WenQuanYi Micro Hei": "文泉驿微米黑",
   "Select Items": "选择物品",
   "Select Key": "选择按键",
   "Select Modules": "选择模块",
@@ -2280,5 +2281,6 @@
   "蜘蛛网timer": "蜘蛛网计时器",
   "让你从一个中心主机控制多个Meteor实例。": "让你从一个中心主机控制多个Meteor实例。",
   "重置UUID按键绑定": "重置UUID按键绑定",
-  "重锤swapping": "重锤切换"
+  "重锤swapping": "重锤切换",
+  "Bound to (highlight)%s(default).": "已绑定至 (highlight)%s(default)。"
 }
