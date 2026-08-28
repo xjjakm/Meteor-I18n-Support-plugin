@@ -44,7 +44,7 @@
 
 ---
 
-#### System 2: Universal Text Replacement System (runtime exact string matching)
+#### System 2: Universal Text Replacement System (runtime exact string matching,A temporary solution that is gradually being phased out)
 **Files:** [universal_zh_cn.json](src/main/resources/assets/yalu/lang/universal_zh_cn.json) / [universal_zh_tw.json](src/main/resources/assets/yalu/lang/universal_zh_tw.json) / [universal_en_us.json](src/main/resources/assets/yalu/lang/universal_en_us.json)
 **Core classes:** [UniversalLangLoader.java](src/main/java/com/yalu/addon/util/UniversalLangLoader.java) + [TextReplacement.java](src/main/java/com/yalu/addon/util/TextReplacement.java)
 

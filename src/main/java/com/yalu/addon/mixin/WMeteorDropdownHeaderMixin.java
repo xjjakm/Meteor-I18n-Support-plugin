@@ -1,10 +1,11 @@
 package com.yalu.addon.mixin;
 
-import com.yalu.addon.util.TextReplacement;
 import meteordevelopment.meteorclient.gui.themes.meteor.widgets.input.WMeteorDropdown;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
+
+import static com.yalu.addon.TranslateAddon.gui;
 
 /**
 * Translate the selected value text rendered in the dropdown header
@@ -18,6 +19,6 @@ method = "onRender(Lmeteordevelopment/meteorclient/gui/renderer/GuiRenderer;DDD)
 at = @At(value = "INVOKE", target = "Ljava/lang/Object;toString()Ljava/lang/String;")
 )
 private String onHeaderValueToString(Object value) {
-return TextReplacement.replace(value.toString());
+return gui(value.toString());
 }
 }

@@ -44,7 +44,7 @@
 
 ---
 
-#### 第二套：Universal 通用文字替換系統（執行時字串精確比對）
+#### 第二套：Universal 通用文字替換系統（執行時字串精確比對，一種臨時解決方案，正在逐漸被取代）
 **檔案：** [universal_zh_cn.json](src/main/resources/assets/yalu/lang/universal_zh_cn.json) / [universal_zh_tw.json](src/main/resources/assets/yalu/lang/universal_zh_tw.json) / [universal_en_us.json](src/main/resources/assets/yalu/lang/universal_en_us.json)
 **核心類別：** [UniversalLangLoader.java](src/main/java/com/yalu/addon/util/UniversalLangLoader.java) + [TextReplacement.java](src/main/java/com/yalu/addon/util/TextReplacement.java)
 

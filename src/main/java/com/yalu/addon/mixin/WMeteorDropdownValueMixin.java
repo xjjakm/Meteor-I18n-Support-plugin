@@ -1,9 +1,10 @@
 package com.yalu.addon.mixin;
 
-import com.yalu.addon.util.TextReplacement;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
+
+import static com.yalu.addon.TranslateAddon.gui;
 
 /**
 * Translate enum/object values rendered inside dropdown widgets.
@@ -17,6 +18,6 @@ method = "onRender(Lmeteordevelopment/meteorclient/gui/renderer/GuiRenderer;DDD)
 at = @At(value = "INVOKE", target = "Ljava/lang/Object;toString()Ljava/lang/String;")
 )
 private String onValueToString(Object value) {
-return TextReplacement.replace(value.toString());
+return gui(value.toString());
 }
 }

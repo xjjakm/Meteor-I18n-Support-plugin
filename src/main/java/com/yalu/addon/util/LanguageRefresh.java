@@ -7,9 +7,7 @@ import meteordevelopment.meteorclient.gui.GuiTheme;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.tabs.Tab;
 import meteordevelopment.meteorclient.gui.tabs.Tabs;
-import meteordevelopment.meteorclient.settings.Setting;
-import meteordevelopment.meteorclient.settings.SettingGroup;
-import meteordevelopment.meteorclient.settings.Settings;
+import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.config.Config;
 import meteordevelopment.meteorclient.systems.hud.Hud;
 import meteordevelopment.meteorclient.systems.modules.Category;
@@ -86,6 +84,7 @@ public final class LanguageRefresh {
                             String newSettingDesc  = TRANSLATOR.Translate(settingDescKey, originalDesc);
                             ((SettingAccessor) setting).setTitle(newSettingTitle);
                             ((SettingAccessor) setting).setDescription(newSettingDesc);
+                            recordDropdownValues(setting);
                             settingsDone++;
                         }
                     }
@@ -174,6 +173,7 @@ public final class LanguageRefresh {
                     TRANSLATOR.Translate(settingKey, originalName));
                 ((SettingAccessor) setting).setDescription(
                     TRANSLATOR.Translate(settingDescKey, setting.description));
+                recordDropdownValues(setting);
             }
         }
     }
@@ -188,5 +188,37 @@ public final class LanguageRefresh {
             }
         }
         return "Meteor";
+    }
+
+    /**
+     * 记录下拉框所有候选值的缺失翻译键，避免必须逐个点开下拉框才会写入 lang.json。
+     * 这里通过设置的数据模型静态枚举（而非等待界面渲染——渲染只发生在打开界面时）：
+     * - EnumSetting：遍历全部枚举常量，选项文本即 value.toString()；
+     * - ProvidedStringSetting：遍历 supplier 提供的候选字符串。
+     * 统一走 gui()，与 WMeteorDropdown 渲染路径生成的键完全一致（Gui.Meteor.{baseFormat}），
+     * 因此启动时即可把这些缺失键写入 lang.json。
+     */
+    private static void recordDropdownValues(Setting<?> setting) {
+        try {
+            if (setting instanceof EnumSetting<?> enumSetting) {
+                Object current = enumSetting.get();
+                if (current instanceof Enum<?> e) {
+                    for (Object constant : e.getDeclaringClass().getEnumConstants()) {
+                        if (constant != null) gui(constant.toString());
+                    }
+                }
+            } else if (setting instanceof ProvidedStringSetting provided) {
+                if (provided.supplier != null) {
+                    String[] options = provided.supplier.get();
+                    if (options != null) {
+                        for (String option : options) {
+                            if (option != null) gui(option);
+                        }
+                    }
+                }
+            }
+        } catch (Throwable t) {
+            LOGGER.error("[MeteorTranslation] Failed to record dropdown values for setting", t);
+        }
     }
 }

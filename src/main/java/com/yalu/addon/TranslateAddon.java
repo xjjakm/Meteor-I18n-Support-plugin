@@ -73,6 +73,25 @@ public class TranslateAddon extends MeteorAddon {
         LanguageRefresh.applyAll(true);
     }
 
+    /**
+     * 翻译 Meteor 及其它 addon GUI 中硬编码的字面量（按钮文字、下拉框枚举值等）。
+     * 仅走标准语言文件系统的通用键 Gui.Meteor.{name}，不做任何映射回退。
+     * 未命中且为英文时写入 lang.json（去重），并原样返回文本。
+     */
+    public static String gui(String text) {
+        if (text == null || text.isEmpty()) return text;
+        // 仅当文本包含 ASCII 字母（即仍是英文）时才查询/记录缺失键，
+        // 避免把已翻译的中文文本再生成 Gui.Meteor.{中文} 键污染 lang.json。
+        boolean hasAsciiLetter = false;
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) { hasAsciiLetter = true; break; }
+        }
+        if (!hasAsciiLetter) return text;
+        String key = "Gui.Meteor." + TransUtil.baseFormat(text);
+        return TRANSLATOR.recordMissing(key, text);
+    }
+
     private void dumpUnknownText() {
         Set<String> unknown = TextReplacement.getUnknown();
         if (unknown.isEmpty()) return;

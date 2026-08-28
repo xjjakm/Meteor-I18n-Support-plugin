@@ -17,10 +17,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 public class Translator {
@@ -29,6 +26,28 @@ public class Translator {
     private Map<String, String> currentLangStrings;
     /** 记录已加载语言代码的签名，语言未变化时跳过重复 reload */
     private String loadedLangSignature;
+    /** 已记入 lang.json 的缺失键集合，避免渲染路径（下拉框、按钮每帧）反复刷盘 */
+    private final Set<String> recordedMissingKeys = Collections.synchronizedSet(new HashSet<>());
+
+    /**
+     * 只读查询翻译：命中返回译文，未命中返回 fallback，不写 lang.json。
+     * 用于渲染路径（如下拉框每帧文本），避免缺失键反复写盘。
+     */
+    public String get(String key, String fallback) {
+        if (this.currentLangStrings == null) return fallback;
+        String value = this.currentLangStrings.get(key);
+        return value != null ? value : fallback;
+    }
+
+    /**
+     * 记录缺失键到 lang.json。渲染路径（下拉框、按钮每帧）会频繁以同一键查询，
+     * 只在第一次见到该缺失键时写入一次，避免每帧写盘。
+     * 命中返回译文；未命中时写入 lang.json 并返回 fallback。
+     */
+    public String recordMissing(String key, String fallback) {
+        if (!this.recordedMissingKeys.add(key)) return get(key, fallback);
+        return this.Translate(key, fallback);
+    }
 
     public String Translate(String key,String name) {
         if (this.currentLangStrings == null) {

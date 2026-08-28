@@ -46,7 +46,7 @@
 
 ---
 
-#### 第二套：Universal 通用文本替换系统（运行时字符串精确匹配）
+#### 第二套：Universal 通用文本替换系统（运行时字符串精确匹配，一种临时解决方案，正在逐渐被取代）
 **文件：** [universal_zh_cn.json](src/main/resources/assets/yalu/lang/universal_zh_cn.json) / [universal_zh_tw.json](src/main/resources/assets/yalu/lang/universal_zh_tw.json) / [universal_en_us.json](src/main/resources/assets/yalu/lang/universal_en_us.json)
 **核心类：** [UniversalLangLoader.java](src/main/java/com/yalu/addon/util/UniversalLangLoader.java) + [TextReplacement.java](src/main/java/com/yalu/addon/util/TextReplacement.java)
 
