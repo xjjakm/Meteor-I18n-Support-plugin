@@ -98,9 +98,14 @@ public class MeteorI18nCommand {
 
     private static void addMessage(Component message) {
         MutableComponent prefix = Component.literal("[")
-            .withStyle(ChatFormatting.DARK_PURPLE)
+            .withStyle(ChatFormatting.YELLOW)
             .append(Component.translatable("meteori18n.prefix").withStyle(ChatFormatting.DARK_PURPLE))
-            .append(Component.literal("] ").withStyle(ChatFormatting.DARK_PURPLE));
-        MeteorClient.mc.gui.hud.getChat().addClientSystemMessage(prefix.append(message));
+            .append(Component.literal("] ").withStyle(ChatFormatting.YELLOW));
+        // 仅让「[彗星翻译]」前缀为紫色：消息自身有颜色（如 sendError 的红色）时保留，
+        // 无颜色时显式补白，避免从父组件继承紫色。
+        Component content = message.getStyle().getColor() != null
+            ? message
+            : message.copy().withStyle(ChatFormatting.WHITE);
+        MeteorClient.mc.gui.hud.getChat().addClientSystemMessage(prefix.append(content));
     }
 }

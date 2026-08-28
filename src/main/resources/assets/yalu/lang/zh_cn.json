@@ -3926,5 +3926,14 @@
   "meteori18n.export.error": "导出翻译文件失败",
   "meteori18n.export.success": "已导出 %s 条翻译到 %s",
   "meteori18n.export.empty": "无翻译数据可导出，已跳过",
+  "about.thisplugin.authors": "插件作者|译者：kono_yalu",
+  "about.thisplugin.othertranslators": "其他译者：noob-xiaoyu,chxjj,2357111317192329",
+  "about.thisplugin.version": "汉化插件版本：%s",
+  "about.thisplugin.desc": "插件描述：为Meteor客户端或其他插件添加了语言文件支持，本版本是复刻版本",
+  "about.thisplugin.ai": "使用AI机翻+人工校验，若有出错请到github仓库上提交issue",
+  "about.thisplugin.free": "本插件完全免费且开源，请勿用于商业用途，且不要上当受骗",
+  "about.thisplugin.langfile": "如果发现插件翻译不全或出现未翻译的问题请查看版本文件夹根目录下的lang.json文件或自行翻译或上报到github",
+  "about.thisplugin.untranslated": "注意！如果有发现功能名称后面有'[!]'的情况，则说明这个功能尚未翻译，请自行翻译",
+  "about.thisplugin.repo": "点我跳转插件仓库",
   "modmenu.descriptionTranslation.meteor-i18n-addon": "为彗星端添加本地化语言文件支持"
 }

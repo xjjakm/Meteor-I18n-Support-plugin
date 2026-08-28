@@ -3926,5 +3926,14 @@
   "meteori18n.export.error": "Failed to export translation file.",
   "meteori18n.export.success": "Exported %s translations to %s.",
   "meteori18n.export.empty": "No translation data to export, skipped.",
+  "about.thisplugin.authors": "Plugin author/translator: kono_yalu",
+  "about.thisplugin.othertranslators": "Other translators: noob-xiaoyu, chxjj, 2357111317192329",
+  "about.thisplugin.version": "Plugin version: %s",
+  "about.thisplugin.desc": "Plugin description: Added language file support to the Meteor client and other addons. This version is a fork.",
+  "about.thisplugin.ai": "Uses AI machine translation plus manual review. If there are errors, please submit an issue on the GitHub repository.",
+  "about.thisplugin.free": "This plugin is completely free and open source. Do not use it for commercial purposes, and do not fall for scams.",
+  "about.thisplugin.langfile": "If you find incomplete or untranslated content, check the lang.json file at the root of the version folder, translate it yourself, or report it on GitHub.",
+  "about.thisplugin.untranslated": "Note! If you see a feature name followed by '[!]', it means that feature has not been translated yet. Please translate it yourself.",
+  "about.thisplugin.repo": "Click here to jump to the plugin repository",
   "modmenu.descriptionTranslation.meteor-i18n-addon": "Adds localization language file support to the Meteor client."
 }
