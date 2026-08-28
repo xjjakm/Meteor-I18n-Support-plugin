@@ -1,12 +1,13 @@
-### [English](./README_en-us.md) [繁體中文](./README_zh-tw.md)
-
-### 本仓库现开放接受问题报告(issues)和拉取请求(pull requests)，从本仓库下载的mod的bug和翻译问题请务必提交到本仓库，因为这个分支的代码和yalu的差别非常大。
+### 简体中文 [繁體中文](./README_zh-tw.md) [English](./README_en-us.md) 
 
 # Meteor I18n Support
+
+> 本仓库现开放接受问题报告(issues)和拉取请求(pull requests)，从本仓库下载的mod的bug和翻译问题请务必提交到本仓库，因为这个分支的代码和yalu的差别非常大。
 
 ![repo-size](https://img.shields.io/github/repo-size/xjjakm/Meteor-I18n-Support-plugin) 
 ![Downloads](https://img.shields.io/github/downloads/xjjakm/Meteor-I18n-Support-plugin/total)
 <img src="https://img.shields.io/github/languages/code-size/xjjakm/Meteor-I18n-Support-plugin" alt="GitHub code size in bytes"/>
+<img src="https://img.shields.io/github/license/xjjakm/Meteor-I18n-Support-plugin?logo=mdBook&color=FF8C00">
 #### 这个插件为Meteor本体添加了lang语言文件支持，使大部分文字可以进行非硬编码更改
 #### 这个复刻添加了繁體中文(台灣)语言支持,且只支持最新版本
 ### 怎么用？
@@ -138,7 +139,3 @@ Wurst客户端提供语言文件I18n支持思路
 <img width="1920" height="1009" alt="2026-05-23_16 33 05" src="https://github.com/user-attachments/assets/afc0b1ee-ddd8-4688-aba6-4349d78ed9ce" />
 
 <img width="2560" height="1351" alt="Snipaste_2025-07-31_02-19-29" src="https://github.com/user-attachments/assets/af281df7-9e49-44e5-b1cb-a71de21f7ffc" />
-
-<img width="1920" height="1009" alt="2026-05-23_16 39 41" src="https://github.com/user-attachments/assets/a28d3677-02cc-4eaf-96be-8f7f01ecebce" />
-
-<img width="1920" height="1009" alt="2026-05-23_16 45 55" src="https://github.com/user-attachments/assets/e6939ea4-777a-4763-b9c0-c6b84040fb64" />

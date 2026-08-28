@@ -3,6 +3,8 @@ package com.yalu.addon.util;
 import com.mojang.logging.LogUtils;
 import com.yalu.addon.mixin.SettingGroupAccessor;
 import com.yalu.addon.util.trans_engine.AbstractTransEngine;
+import meteordevelopment.meteorclient.commands.Command;
+import meteordevelopment.meteorclient.commands.Commands;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.tabs.Tab;
 import meteordevelopment.meteorclient.gui.tabs.Tabs;
@@ -12,8 +14,11 @@ import meteordevelopment.meteorclient.settings.Settings;
 import meteordevelopment.meteorclient.systems.config.Config;
 import meteordevelopment.meteorclient.systems.hud.Hud;
 import meteordevelopment.meteorclient.systems.hud.HudElementInfo;
+import meteordevelopment.meteorclient.systems.hud.HudGroup;
+import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
+import meteordevelopment.meteorclient.utils.Utils;
 import net.minecraft.client.Minecraft;
 import org.slf4j.Logger;
 
@@ -33,7 +38,7 @@ public class JsonDump {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     //    private LinkedHashSet<String> keySet = new LinkedHashSet<>();
-    private LinkedHashMap<String, String> entMap = new LinkedHashMap<>();
+    private final LinkedHashMap<String, String> entMap = new LinkedHashMap<>();
     private BufferedWriter dumpBW;
 
     private boolean dumpText() {
@@ -135,14 +140,43 @@ public class JsonDump {
 
 
                 }
+
+                // 模块设置组名称
+                String groupNameKey = engine.getGroupNameKey(module, group);
+                addEntry(groupNameKey, dumpText ? engine2.transGroupName(module, group) : group.name);
             }
 
+        }
+
+        // --- HUD Element keys ---
+        for (HudElementInfo<?> info : Hud.get().infos.values()) {
+            HudGroup hudGroup = info.group;
+            String hudTitleKey = engine.getHudTitleKey(hudGroup, info);
+            addEntry(hudTitleKey, dumpText ? engine2.transHudTitle(hudGroup, info) : info.title);
+
+            String hudDescKey = engine.getHudDescriptionKey(hudGroup, info);
+            addEntry(hudDescKey, dumpText ? engine2.transHudDescription(hudGroup, info) : info.description);
+        }
+
+        // --- Category keys ---
+        for (Category category : Modules.loopCategories()) {
+            String key = engine.getCategoryNameKey(category);
+            addEntry(key, dumpText ? engine2.transCategoryName(category) : category.name);
+        }
+
+        // --- Command keys ---
+        for (Command command : Commands.COMMANDS) {
+            String titleKey = engine.getCommandTitleKey(command);
+            addEntry(titleKey, dumpText ? engine2.transCommandTitle(command) : Utils.nameToTitle(command.getName()));
+
+            String descKey = engine.getCommandDescriptionKey(command);
+            addEntry(descKey, dumpText ? engine2.transCommandDescription(command) : command.getDescription());
         }
 
         // --- HUD Preset keys ---
         for (HudElementInfo<?> info : Hud.get().infos.values()) {
             if (!info.hasPresets()) continue;
-            for (HudElementInfo.Preset preset : info.presets) {
+            for (HudElementInfo<?>.Preset preset : info.presets) {
                 String presetName = TransUtil.baseFormat(preset.title);
                 String key = engine.getHudPresetTitleKey(info, presetName);
                 addEntry(key, dumpText ? engine.transHudPresetTitle(info, presetName) : preset.title);

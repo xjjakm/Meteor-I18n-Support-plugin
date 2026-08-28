@@ -10,6 +10,7 @@ import meteordevelopment.meteorclient.gui.tabs.Tabs;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.settings.Settings;
+import meteordevelopment.meteorclient.systems.config.Config;
 import meteordevelopment.meteorclient.systems.hud.Hud;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Module;
@@ -97,10 +98,14 @@ public final class LanguageRefresh {
             // onInitialize 阶段可能在 GuiThemes/Hud 初始化前触发（Minecraft.<init> 期间），
             // 因此对它们的 get() 结果做空判断，避免 NPE 中断后续分类/Tab 的翻译。
             Hud hud = Hud.get();
-            if (hud != null) translateStandalone(hud.settings);
+            if (hud != null) translateStandalone("hud", hud.settings);
 
             GuiTheme guiTheme = GuiThemes.get();
-            if (guiTheme != null) translateStandalone(guiTheme.settings);
+            if (guiTheme != null) translateStandalone("gui_theme", guiTheme.settings);
+
+            // 配置系统设置（与上方独立 Settings 采用相同的 Setting.* 键格式）
+            Config config = Config.get();
+            if (config != null) translateStandalone("config", config.settings);
 
             // 4. 重翻译所有 Category（包括第三方的）
             for (Category category : Modules.loopCategories()) {
@@ -142,13 +147,24 @@ public final class LanguageRefresh {
     }
 
     /**
-     * 重翻译一个独立 Settings 对象中的所有设置（title / description）。
+     * 重翻译一个独立 Settings 对象中的所有设置（title / description），并将缺失
+     * 的设置组名一并写入清单。
      * 键名规则与 SettingMixin 保持一致：根据 Setting 的运行时类前缀解析所属 addon，
      * 生成 "Setting.{pkg}.{name}" 与 "Setting.{pkg}.{name}.Description"。
+     * 设置组名采用 "Setting.{prefix}.{group}.name"，prefix 用于区分 HUD/Config/GUI主题
+     * 对应不同的独立系统设置（避免同名组互相覆盖）。
      */
-    private static void translateStandalone(Settings settings) {
+    private static void translateStandalone(String prefix, Settings settings) {
         if (settings == null) return;
         for (SettingGroup group : settings.groups) {
+            // 设置组名
+            String originalGroupName = NameCache.group(group) != null ? NameCache.group(group) : group.name;
+            String groupKey = "Setting." + prefix + "." + TransUtil.baseFormat(originalGroupName) + ".name";
+            String translatedGroup = TRANSLATOR.Translate(groupKey, originalGroupName);
+            if (!translatedGroup.equals(originalGroupName)) {
+                ((SettingGroupAccessor) group).setName(translatedGroup);
+            }
+
             for (Setting<?> setting : ((SettingGroupAccessor) group).getSettings()) {
                 String originalName = ((SettingAccessor) setting).getName();
                 String pkg = getSettingPackage(setting);

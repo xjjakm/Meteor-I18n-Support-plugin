@@ -1,10 +1,11 @@
-### 本倉庫現開放接受問題回報(issues)和拉取請求(pull requests)，從本倉庫下載的mod的bug和翻譯問題請務必提交到本倉庫，因為這個分支的程式碼和yalu的差別非常大。
-
 # Meteor I18n Support
+
+> 本倉庫現開放接受問題回報(issues)和拉取請求(pull requests)，從本倉庫下載的mod的bug和翻譯問題請務必提交到本倉庫，因為這個分支的程式碼和yalu的差別非常大。
 
 ![repo-size](https://img.shields.io/github/repo-size/xjjakm/Meteor-I18n-Support-plugin) 
 ![Downloads](https://img.shields.io/github/downloads/xjjakm/Meteor-I18n-Support-plugin/total)
 <img src="https://img.shields.io/github/languages/code-size/xjjakm/Meteor-I18n-Support-plugin" alt="GitHub code size in bytes"/>
+<img src="https://img.shields.io/github/license/xjjakm/Meteor-I18n-Support-plugin?logo=mdBook&color=FF8C00">
 #### 這個插件為Meteor本體添加了lang語言檔案支援，使大部分文字可以進行非硬編碼更改
 #### 這個復刻添加了繁體中文(台灣)語言支援，且只支援最新版本
 ### 怎麼用？
@@ -132,10 +133,6 @@ Wurst用戶端提供語言檔案I18n支援思路
 
 [KJH50](https://github.com/KJH50)的中文補丁
 
-
-<img width="1920" height="1009" alt="2026-05-23_16 33 05" src="https://github.com/user-attachments/assets/afc0b1ee-ddd8-4688-aba6-4349d78ed9ce" />
-
-<img width="2560" height="1351" alt="Snipaste_2025-07-31_02-19-29" src="https://github.com/user-attachments/assets/af281df7-9e49-44e5-b1cb-a71de21f7ffc" />
 
 <img width="1920" height="1009" alt="2026-05-23_16 39 41" src="https://github.com/user-attachments/assets/a28d3677-02cc-4eaf-96be-8f7f01ecebce" />
 

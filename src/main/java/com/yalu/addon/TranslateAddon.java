@@ -10,6 +10,7 @@ import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
+import meteordevelopment.meteorclient.utils.PostInit;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.Minecraft;
 import org.slf4j.Logger;
@@ -58,6 +59,18 @@ public class TranslateAddon extends MeteorAddon {
         // Always dump collected unknown text when the client stops, even if
         // module deactivate is not reliably called during shutdown.
         Runtime.getRuntime().addShutdownHook(new Thread(this::dumpUnknownText));
+    }
+
+    /**
+     * 在 Meteor 所有 addon 的 onInitialize 之后、Minecraft 资源管理就绪时强制刷新一次翻译。
+     * 分类/标签页/Meteor 自身模块在 onInitialize 阶段可能因 resourceManager 尚未就绪
+     * （CategoryMixin.onInit 等提前 return）而没有应用中文，故在此兜底，避免启动后需手动 reload。
+     * @PostInit 方法要求静态且由 ReflectInit 反射调用。
+     */
+    @PostInit
+    public static void postInit() {
+        if (MC == null || MC.getResourceManager() == null) return;
+        LanguageRefresh.applyAll(true);
     }
 
     private void dumpUnknownText() {
