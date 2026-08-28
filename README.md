@@ -1,3 +1,5 @@
+### [English](./README_en-us.md) [繁體中文](./README_zh-tw.md)
+
 ### 本仓库现开放接受问题报告(issues)和拉取请求(pull requests)，从本仓库下载的mod的bug和翻译问题请务必提交到本仓库，因为这个分支的代码和yalu的差别非常大。
 
 # Meteor I18n Support
@@ -9,7 +11,7 @@
 #### 这个复刻添加了繁體中文(台灣)语言支持,且只支持最新版本
 ### 怎么用？
 1. 从 Actions 或者 Releases 中下载对应正确mc版本的mod
-2. 下载对应版本的 meteor 本体(还有fabric api（模组版本 ≥26.2-5）)
+2. 下载对应版本的 meteor 本体(还需fabric api（模组版本 ≥26.2-5）)
 3. 把这个mod添加到mods文件夹
 
 ### 注意事项
