@@ -8,6 +8,7 @@ import com.yalu.addon.util.*;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
+import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.systems.accounts.Account;
 import meteordevelopment.meteorclient.systems.accounts.Accounts;
 import meteordevelopment.meteorclient.systems.modules.Category;
@@ -125,6 +126,39 @@ public class TranslateAddon extends MeteorAddon {
     /** 供 WKeybindMixin 登记按键绑定显示文本。 */
     public static void recordKeybindText(String text) {
         if (text != null && !text.isEmpty()) keybindDisplayTexts.add(text);
+    }
+
+    /**
+     * 设置组（SettingGroup）标题的中文显示表。
+     * <p>
+     * Group.name 是 final 字段，同时也是 NBT 序列化的键名（SettingGroup.toTag/fromTag 用它做
+     * getGroup 查询）。以前用 SetAccessor.setName 把 name 改成中文会破坏序列化：保存时以中文名
+     * 写入，下次启动 <code>Settings.fromTag</code> 用 <code>getGroup(中文名)</code> 在还没被改名
+     * 的内存里找不到对应分组（GUI 主题分组在 postInit 阶段才改名，与 GuiThemes.postInit 加载主题
+     * 的顺序不确定），导致颜色等设置恢复为默认。
+     * <p>
+     * 解决办法：不再改动 name 字段，改为在此记录每个分组实例 → 中文标题，由
+     * DefaultSettingsWidgetFactory 渲染分组标题时读取。这样 name 始终保持英文，序列化键稳定。
+     * 用 WeakHashMap 按对象身份保存，避免长期持有分组引用造成内存泄漏。
+     */
+    private static final java.util.Map<SettingGroup, String> groupTitles =
+        java.util.Collections.synchronizedMap(new java.util.WeakHashMap<>());
+
+    /** 记录分组实例对应的显示标题（渲染时用）。 */
+    public static void recordGroupTitle(SettingGroup group, String title) {
+        if (group != null && title != null && !title.isEmpty()) groupTitles.put(group, title);
+    }
+
+    /** 渲染分组标题时调用：优先用记录的中文标题，否则回退 name 原值。 */
+    public static String groupTitle(SettingGroup group) {
+        if (group == null) return "";
+        String t;
+        try {
+            t = groupTitles.get(group);
+        } catch (Throwable ignored) {
+            t = null;
+        }
+        return t != null ? t : group.name;
     }
 
     private static boolean isKeybindText(String text) {

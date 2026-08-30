@@ -5,6 +5,7 @@
   "client": [
     "CategoryAccessor",
     "CategoryMixin",
+    "CatppuccinSettingsWidgetFactoryMixin",
     "ChatUtilsMixin",
     "ChatUtilsPrefixMixin",
     "CommandAccessor",
@@ -51,6 +52,7 @@
   "mixins": [
     "CategoryAccessor",
     "CategoryMixin",
+    "CatppuccinSettingsWidgetFactoryMixin",
     "ChatUtilsMixin",
     "ChatUtilsPrefixMixin",
     "CommandAccessor",

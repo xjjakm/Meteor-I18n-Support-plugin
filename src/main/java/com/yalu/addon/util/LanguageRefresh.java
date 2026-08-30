@@ -65,13 +65,11 @@ public final class LanguageRefresh {
                 // 3. 该 Module 下所有 SettingGroup + Setting
                 if (module.settings != null) {
                     for (SettingGroup group : module.settings.groups) {
-                        // SettingGroup 名称
+                        // SettingGroup 名称（仅记录显示用中文标题，不改动 name 序列化键）
                         String originalGroupName = NameCache.group(group);
                         String groupKey = getSettingGroupKey(module, originalGroupName);
                         String translatedGroup = TRANSLATOR.Translate(groupKey, originalGroupName);
-                        if (!translatedGroup.equals(originalGroupName)) {
-                            ((SettingGroupAccessor) group).setName(translatedGroup);
-                        }
+                        recordGroupTitle(group, translatedGroup);
                         groupsDone++;
 
                         // Settings
@@ -156,13 +154,11 @@ public final class LanguageRefresh {
     private static void translateStandalone(String prefix, Settings settings) {
         if (settings == null) return;
         for (SettingGroup group : settings.groups) {
-            // 设置组名
+            // 设置组名（仅记录显示用中文标题，不改动 name 序列化键）
             String originalGroupName = NameCache.group(group) != null ? NameCache.group(group) : group.name;
             String groupKey = "Setting." + prefix + "." + TransUtil.baseFormat(originalGroupName) + ".name";
             String translatedGroup = TRANSLATOR.Translate(groupKey, originalGroupName);
-            if (!translatedGroup.equals(originalGroupName)) {
-                ((SettingGroupAccessor) group).setName(translatedGroup);
-            }
+            recordGroupTitle(group, translatedGroup);
 
             for (Setting<?> setting : ((SettingGroupAccessor) group).getSettings()) {
                 String originalName = ((SettingAccessor) setting).getName();
