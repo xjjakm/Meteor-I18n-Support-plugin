@@ -35,6 +35,10 @@ public class TranslateAddon extends MeteorAddon {
         UniversalLangLoader.reload();
         TextReplacement.setEnabled(true);
 
+        // 启动时删除旧的 lang.json，让缺失翻译键从本次启动重新干净收集，
+        // 避免历史遗留的无意义键（按键名、玩家名等）残留。
+        deleteOldLangJson();
+
         // Translate the I18n category created during <clinit> (when MC was null)
         if (MC != null && MC.getResourceManager() != null) {
             TRANSLATOR.reload(MC.getResourceManager());
@@ -102,6 +106,9 @@ public class TranslateAddon extends MeteorAddon {
                 if (text.equalsIgnoreCase(account.getUsername())) return text;
             }
         }
+        // 跳过按键绑定显示的按键名（动态数据，由 WKeybind 刷新时登记、vanilla key.* 语言键处理），
+        // 避免把 "RCONTROL"、"左侧 Ctrl"、"Ctrl + Right Control"、"None" 等写进 lang.json。
+        if (isKeybindText(text)) return text;
         String key = "Gui.Meteor." + TransUtil.baseFormat(text);
         return TRANSLATOR.recordMissing(key, text);
     }
@@ -109,7 +116,62 @@ public class TranslateAddon extends MeteorAddon {
     private static boolean isCjk(char c) {
         return (c >= '一' && c <= '鿿')  // CJK 统一表意文字
             || (c >= '㐀' && c <= '䶿')  // CJK 扩展 A
-            || (c >= '豈' && c <= '﫿'); // CJK 兼容表意文字
+            || (c >= '豈' && c <= '﫿'); // CJK 兼容表意文字
+    }
+
+    /** WKeybind 刷新时登记的按键绑定显示文本（动态数据），gui() 据此跳过，避免写入 lang.json。 */
+    private static final java.util.Set<String> keybindDisplayTexts = java.util.Collections.synchronizedSet(new java.util.HashSet<>());
+
+    /** 供 WKeybindMixin 登记按键绑定显示文本。 */
+    public static void recordKeybindText(String text) {
+        if (text != null && !text.isEmpty()) keybindDisplayTexts.add(text);
+    }
+
+    private static boolean isKeybindText(String text) {
+        if (text == null || text.isEmpty()) return false;
+        if (keybindDisplayTexts.contains(text)) return true; // WKeybind 已登记的实际按键文本
+        return isKeynameLike(text); // 兜底按值识别（不依赖 WKeybind，也不触发 glfw）
+    }
+
+    /** 按键名称特征识别（无 GLFW 调用）：单字母键（如 "Z"、"A"）或修饰键组合（如 "Ctrl + Z"）。 */
+    private static boolean isKeynameLike(String text) {
+        // 单个字母键：原版字母键译名就是英文字母本身（非中文），需跳过
+        if (text.length() == 1) {
+            char c = text.charAt(0);
+            return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
+        }
+        // 修饰键组合，如 "Ctrl + Z"、"Shift + A"（" + " 分隔的 token 均为修饰键或单字母）
+        if (text.contains(" + ")) {
+            for (String seg : text.split(" \\+ ")) {
+                String s = seg.trim();
+                if (s.isEmpty() || !(isKeyModifier(s) || isSingleLetter(s))) return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean isKeyModifier(String s) {
+        return s.equals("Ctrl") || s.equals("Cmd") || s.equals("Alt") || s.equals("Shift")
+            || s.equals("Caps Lock") || s.equals("Num Lock");
+    }
+
+    private static boolean isSingleLetter(String s) {
+        return s.length() == 1 && isAsciiLetter(s.charAt(0));
+    }
+
+    private static boolean isAsciiLetter(char c) {
+        return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
+    }
+
+    /** 删除运行目录下旧的缺失翻译清单（lang.json），仅在每次启动清理一次。 */
+    private static void deleteOldLangJson() {
+        try {
+            boolean deleted = java.nio.file.Files.deleteIfExists(java.nio.file.Paths.get("lang.json"));
+            if (deleted) LOG.info("[MeteorTranslation] 已删除旧的 lang.json");
+        } catch (java.io.IOException e) {
+            LOG.warn("[MeteorTranslation] 删除旧的 lang.json 失败: {}", e.toString());
+        }
     }
 
     private void dumpUnknownText() {
