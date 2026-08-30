@@ -1,10 +1,11 @@
 package com.yalu.addon.mixin;
 
-import com.yalu.addon.util.TextReplacement;
 import meteordevelopment.meteorclient.gui.widgets.WWidget;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+
+import static com.yalu.addon.TranslateAddon.gui;
 
 @Mixin(value = WWidget.class, remap = false)
 public class WWidgetMixin {
@@ -15,6 +16,6 @@ at = @At(value = "INVOKE", target = "Lmeteordevelopment/meteorclient/gui/rendere
 index = 0
 )
 private String translateTooltip(String tooltip) {
-return TextReplacement.replace(tooltip);
+return gui(tooltip);
 }
 }

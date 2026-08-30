@@ -66,7 +66,7 @@
 **核心類別：** [JoinMultiplayerScreenTranslationMixin](src/main/java/com/yalu/addon/mixin/JoinMultiplayerScreenTranslationMixin.java) / [ModuleMixin](src/main/java/com/yalu/addon/mixin/ModuleMixin.java) 的 `@Redirect` 等
 
 **原理：** 不依賴字串比對，直接在 Mixin 中替換邏輯：
-- `ModuleMixin` → `@Redirect sendToggledMsg(...)` 根據目前語言分流：`zh_cn` 顯示「開啟/關閉」、`zh_tw` 顯示「開啟/關閉」、其他語言保持 `on/off`（帶顏色程式碼的動態拼接字串，universal 系統無法精確比對，必須用 Mixin 直改）
+- `ModuleMixin` → `@Redirect sendToggledMsg(...)` 根據目前語言分流：`zh_cn` 顯示「开启/关闭」、`zh_tw` 顯示「開啟/關閉」、其他語言保持 `on/off`（帶顏色程式碼的動態拼接字串，universal 系統無法精確比對，必須用 Mixin 直改）
 - `JoinMultiplayerScreenTranslationMixin` → 透過 `children()` 遍歷找到 `Button` 實例並替換文字
 
 **覆蓋範圍：**

@@ -80,8 +80,12 @@ public class TranslateAddon extends MeteorAddon {
      */
     public static String gui(String text) {
         if (text == null || text.isEmpty()) return text;
-        // 仅当文本包含 ASCII 字母（即仍是英文）时才查询/记录缺失键，
-        // 避免把已翻译的中文文本再生成 Gui.Meteor.{中文} 键污染 lang.json。
+        // 文本含中日韩表意字符即视为已翻译（如"防AFK"、"存储ESP"、"Microsoft 喜马拉雅"），
+        // 直接原样返回，避免把中英混合文本再生成 Gui.Meteor.{中文} 键污染 lang.json。
+        for (int i = 0; i < text.length(); i++) {
+            if (isCjk(text.charAt(i))) return text;
+        }
+        // 仅当文本包含 ASCII 字母（即仍是英文）时才查询/记录缺失键。
         boolean hasAsciiLetter = false;
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
@@ -90,6 +94,12 @@ public class TranslateAddon extends MeteorAddon {
         if (!hasAsciiLetter) return text;
         String key = "Gui.Meteor." + TransUtil.baseFormat(text);
         return TRANSLATOR.recordMissing(key, text);
+    }
+
+    private static boolean isCjk(char c) {
+        return (c >= '\u4E00' && c <= '\u9FFF')  // CJK 统一表意文字
+            || (c >= '\u3400' && c <= '\u4DBF')  // CJK 扩展 A
+            || (c >= '\uF900' && c <= '\uFAFF'); // CJK 兼容表意文字
     }
 
     private void dumpUnknownText() {

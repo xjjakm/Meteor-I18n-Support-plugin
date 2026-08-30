@@ -16,9 +16,9 @@
 3. 把这个mod添加到mods文件夹
 
 ### 注意事项
-- ！！！本插件未进行全版本测试
-- 经过测试 在1.21以下版本未进行适配无法使用
-- ！！！本插件未进行全面的测试，与其他插件一起使用时可能小概率存在冲突，若游戏崩溃，可以尝试将本插件删除
+- ！！！本插件对游戏版本有较为严格的要求
+- ！！！本插件未进行全面的测试，与其他插件一起使用时可能小概率存在冲突，若游戏崩溃，可以尝试将本插件删除，也可以交问题报告
+- ！！！本插件现已适配 [Catppuccin addon](https://github.com/X-C-0/catppuccin-addon) 和 [Meteor+](https://github.com/MeteorClientPlus/MeteorPlus) 的相关内容，如果遇到这和两个插件一起运行而导致的的问题请上报
 - ！！！本插件可以同步支持其他Meteor插件 需要将版本文件夹根目录lang.json文件内的内容移动到相应的语言文件内（asset/.../lang/XX_XX.json）
 - ！！！本插件不会默认适配已经汉化过的Meteor客户端
 - ！！！[MeteorCN](https://github.com/dingzhen-vape/MeteorCN)不会更新了

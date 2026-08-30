@@ -1,6 +1,5 @@
 package com.yalu.addon.mixin;
 
-import com.yalu.addon.util.TextReplacement;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
@@ -10,6 +9,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import static com.yalu.addon.TranslateAddon.gui;
 
 @Mixin(value = JoinMultiplayerScreen.class, priority = 1100)
 public abstract class JoinMultiplayerScreenTranslationMixin extends Screen {
@@ -23,7 +24,7 @@ public abstract class JoinMultiplayerScreenTranslationMixin extends Screen {
         for (GuiEventListener child : this.children()) {
             if (child instanceof Button button) {
                 String text = button.getMessage().getString();
-                String translated = TextReplacement.replace(text);
+                String translated = gui(text);
                 if (!text.equals(translated)) {
                     button.setMessage(Component.literal(translated));
                 }

@@ -1,16 +1,17 @@
 package com.yalu.addon.mixin;
 
-import com.yalu.addon.util.TextReplacement;
 import meteordevelopment.meteorclient.gui.WidgetScreen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+
+import static com.yalu.addon.TranslateAddon.gui;
 
 @Mixin(value = WidgetScreen.class, remap = false)
 public class WidgetScreenMixin {
 
 @ModifyVariable(method = "<init>(Lmeteordevelopment/meteorclient/gui/GuiTheme;Ljava/lang/String;)V", at = @At("HEAD"), argsOnly = true)
 private static String onInit(String title) {
-return TextReplacement.replace(title);
+return gui(title);
 }
 }
