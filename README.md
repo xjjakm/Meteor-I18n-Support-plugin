@@ -135,6 +135,9 @@ Wurst客户端提供语言文件I18n支持思路
 
 [KJH50](https://github.com/KJH50)的中文补丁
 
+<img width="1919" height="1030" alt="屏幕截图 2026-08-30 170943" src="https://github.com/user-attachments/assets/2bb26046-fcc9-4a45-8609-8cb886106515" />
+
+<img width="1918" height="1031" alt="屏幕截图 2026-08-30 171956" src="https://github.com/user-attachments/assets/f1868a3c-7de7-4194-bf1e-88d2cc74666c" />
 
 <img width="1920" height="1009" alt="2026-05-23_16 33 05" src="https://github.com/user-attachments/assets/afc0b1ee-ddd8-4688-aba6-4349d78ed9ce" />
 
