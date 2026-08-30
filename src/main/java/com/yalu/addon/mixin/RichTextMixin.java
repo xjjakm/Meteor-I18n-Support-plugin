@@ -17,7 +17,7 @@ import static com.yalu.addon.TranslateAddon.gui;
 @Mixin(targets = "me.pindour.catppuccin.api.text.RichText", remap = false)
 public class RichTextMixin {
 
-@ModifyVariable(method = "<init>(Ljava/lang/String;)V", at = @At("HEAD"), argsOnly = true, name = "text")
+@ModifyVariable(method = "<init>(Ljava/lang/String;)V", at = @At("HEAD"), argsOnly = true, index = 1)
 private static String onInit(String text) {
 return gui(text);
 }
@@ -25,8 +25,7 @@ return gui(text);
 @ModifyVariable(
 method = "append(Ljava/lang/String;)Lme/pindour/catppuccin/api/text/RichText;",
 at = @At("HEAD"),
-argsOnly = true,
-name = "text"
+argsOnly = true
 )
 private String onAppend(String text) {
 return gui(text);

@@ -10,7 +10,7 @@ import static com.yalu.addon.TranslateAddon.gui;
 @Mixin(value = WWindow.class, remap = false)
 public class WWindowMixin {
 
-@ModifyVariable(method = "<init>(Lmeteordevelopment/meteorclient/gui/widgets/WWidget;Ljava/lang/String;)V", at = @At("HEAD"), argsOnly = true, name = "title")
+@ModifyVariable(method = "<init>(Lmeteordevelopment/meteorclient/gui/widgets/WWidget;Ljava/lang/String;)V", at = @At("HEAD"), argsOnly = true)
 private static String onInit(String title) {
 return gui(title);
 }
