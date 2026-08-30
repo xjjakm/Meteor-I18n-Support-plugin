@@ -1,3 +1,5 @@
+### English [简体中文](./README.md) [繁體中文](./README_zh-tw.md) 
+
 # Meteor I18n Support
 
 ![repo-size](https://img.shields.io/github/repo-size/xjjakm/Meteor-I18n-Support-plugin) 
@@ -18,6 +20,7 @@
 - !!! This addon has not been fully tested across all versions.
 - It has been tested and is NOT compatible with versions below 1.21 (not adapted, cannot be used).
 - !!! This addon has not been thoroughly tested; when used together with other addons there is a small chance of conflicts. If the game crashes, try removing this addon.
+- !!! This addon is now compatible with [Catppuccin addon](https://github.com/X-C-0/catppuccin-addon) and [Meteor+](https://github.com/MeteorClientPlus/MeteorPlus). If you encounter issues caused by running together with these two addons, please report them.
 - !!! This addon can also support other Meteor addons: move the content of the `lang.json` file at the root of the version folder into the corresponding language file (`assets/.../lang/XX_XX.json`).
 - !!! This addon does not adapt to already-localized Meteor clients by default.
 - !!! [MeteorCN](https://github.com/dingzhen-vape/MeteorCN) will no longer be updated.

@@ -8,6 +8,8 @@ import com.yalu.addon.util.*;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
+import meteordevelopment.meteorclient.systems.accounts.Account;
+import meteordevelopment.meteorclient.systems.accounts.Accounts;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.utils.PostInit;
@@ -53,7 +55,7 @@ public class TranslateAddon extends MeteorAddon {
         Modules.get().add(new AboutThisPlugin());
 
         // 使用 Fabric Command API 挂载 /meteori18n 导出命令
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, _registryAccess) ->
             dispatcher.register(MeteorI18nCommand.build()));
 
         // Always dump collected unknown text when the client stops, even if
@@ -92,14 +94,22 @@ public class TranslateAddon extends MeteorAddon {
             if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) { hasAsciiLetter = true; break; }
         }
         if (!hasAsciiLetter) return text;
+        // 跳过 Meteor 账户系统的玩家名（动态数据，非 UI 文本），
+        // 避免把玩家名写进 lang.json。
+        Accounts accounts = Accounts.get();
+        if (accounts != null) {
+            for (Account<?> account : accounts) {
+                if (text.equalsIgnoreCase(account.getUsername())) return text;
+            }
+        }
         String key = "Gui.Meteor." + TransUtil.baseFormat(text);
         return TRANSLATOR.recordMissing(key, text);
     }
 
     private static boolean isCjk(char c) {
-        return (c >= '\u4E00' && c <= '\u9FFF')  // CJK 统一表意文字
-            || (c >= '\u3400' && c <= '\u4DBF')  // CJK 扩展 A
-            || (c >= '\uF900' && c <= '\uFAFF'); // CJK 兼容表意文字
+        return (c >= '一' && c <= '鿿')  // CJK 统一表意文字
+            || (c >= '㐀' && c <= '䶿')  // CJK 扩展 A
+            || (c >= '豈' && c <= '﫿'); // CJK 兼容表意文字
     }
 
     private void dumpUnknownText() {

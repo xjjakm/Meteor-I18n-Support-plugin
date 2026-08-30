@@ -1,3 +1,5 @@
+### 繁體中文 [简体中文](./README.md) [English](./README_en-us.md) 
+
 # Meteor I18n Support
 
 > 本倉庫現開放接受問題回報(issues)和拉取請求(pull requests)，從本倉庫下載的mod的bug和翻譯問題請務必提交到本倉庫，因為這個分支的程式碼和yalu的差別非常大。
@@ -17,6 +19,7 @@
 - ！！！本插件未進行全版本測試
 - 經過測試 在1.21以下版本未進行適配無法使用
 - ！！！本插件未進行全面的測試，與其他插件一起使用時可能小機率存在衝突，若遊戲崩潰，可以嘗試將本插件刪除
+- ！！！本插件現已適配 [Catppuccin addon](https://github.com/X-C-0/catppuccin-addon) 和 [Meteor+](https://github.com/MeteorClientPlus/MeteorPlus) 的相關內容，如果遇到這兩個插件一起執行而導致的問題請上報
 - ！！！本插件可以同步支援其他Meteor插件 需要將版本資料夾根目錄lang.json檔案內的內容移動到相應的語言檔案內（asset/.../lang/XX_XX.json）
 - ！！！本插件不會預設適配已經漢化過的Meteor用戶端
 - ！！！[MeteorCN](https://github.com/dingzhen-vape/MeteorCN)不會再更新了

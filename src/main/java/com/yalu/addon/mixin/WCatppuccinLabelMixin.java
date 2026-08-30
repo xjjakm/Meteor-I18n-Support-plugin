@@ -15,7 +15,7 @@ import static com.yalu.addon.TranslateAddon.gui;
 @Mixin(targets = "me.pindour.catppuccin.gui.themes.catppuccin.widgets.WCatppuccinLabel", remap = false)
 public class WCatppuccinLabelMixin {
 
-@ModifyVariable(method = "set(Ljava/lang/String;)V", at = @At("HEAD"), argsOnly = true)
+@ModifyVariable(method = "set(Ljava/lang/String;)V", at = @At("HEAD"), argsOnly = true, name = "text")
 private String onSet(String text) {
 return gui(text);
 }
