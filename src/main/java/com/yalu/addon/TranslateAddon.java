@@ -110,6 +110,10 @@ public class TranslateAddon extends MeteorAddon {
         // 跳过按键绑定显示的按键名（动态数据，由 WKeybind 刷新时登记、vanilla key.* 语言键处理），
         // 避免把 "RCONTROL"、"左侧 Ctrl"、"Ctrl + Right Control"、"None" 等写进 lang.json。
         if (isKeybindText(text)) return text;
+        // 跳过 WTextBox 的实时输入文本（由 WTextBoxMixin 渲染时登记）：用户输入是动态数据，
+        // 不应按 Gui.Meteor.{输入} 翻译（否则输入 "vanilla" 会因 Gui.Meteor.vanilla="原版" 变字）
+        // 也不应写入 lang.json。占位提示（placeholder）走 onInitPlaceholder 的 gui() 仍正常翻译。
+        if (userTypedTexts.contains(text)) return text;
         String key = "Gui.Meteor." + TransUtil.baseFormat(text);
         return TRANSLATOR.recordMissing(key, text);
     }
@@ -126,6 +130,23 @@ public class TranslateAddon extends MeteorAddon {
     /** 供 WKeybindMixin 登记按键绑定显示文本。 */
     public static void recordKeybindText(String text) {
         if (text != null && !text.isEmpty()) keybindDisplayTexts.add(text);
+    }
+
+    /**
+     * WTextBox 实时输入文本集合：由 WTextBoxMixin 在渲染时登记当前 text。
+     * gui() 据此跳过输入内容（不翻译、不写 lang.json），而 placeholder 仍走 gui() 翻译。
+     */
+    private static final java.util.Set<String> userTypedTexts = java.util.Collections.synchronizedSet(new java.util.HashSet<>());
+
+    /** 仅登记含 ASCII 字母的输入（gui() 只处理这类文本），避免空串/纯符号/中文占用集合。 */
+    public static void recordUserTypedText(String text) {
+        if (text == null || text.isEmpty()) return;
+        boolean hasAsciiLetter = false;
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) { hasAsciiLetter = true; break; }
+        }
+        if (hasAsciiLetter) userTypedTexts.add(text);
     }
 
     /**
