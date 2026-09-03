@@ -68,21 +68,18 @@ public abstract class ModuleMixin {
     }
 
     @Unique
-    private static boolean isZhCn() {
-        try {
-            return MC.getLanguageManager().getSelected().equals("zh_cn");
-        } catch (Exception ignored) {
-            return false;
+    private static String translateToggleArg(String s) {
+        // 参数形如 ChatFormatting.GREEN + "on"（§aon）或 ChatFormatting.RED + "off"（§coff）。
+        // 去掉颜色前缀后按标准语言文件（meteori18n.toggle.on/off）翻译，替代硬编码中文字符串。
+        if (s.length() >= 2 && s.charAt(0) == '§') {
+            ChatFormatting fmt = ChatFormatting.getByCode(s.charAt(1));
+            String word = s.substring(2);
+            String key = null;
+            if ("on".equals(word)) key = "meteori18n.toggle.on";
+            else if ("off".equals(word)) key = "meteori18n.toggle.off";
+            if (fmt != null && key != null) return fmt + TRANSLATOR.get(key, word);
         }
-    }
-
-    @Unique
-    private static boolean isZhTw() {
-        try {
-            return MC.getLanguageManager().getSelected().equals("zh_tw");
-        } catch (Exception ignored) {
-            return false;
-        }
+        return s;
     }
 
     @Redirect(method = "sendToggledMsg", at = @At(value = "INVOKE", target = "Lmeteordevelopment/meteorclient/utils/player/ChatUtils;sendMsg(ILnet/minecraft/ChatFormatting;Ljava/lang/String;[Ljava/lang/Object;)V"))
@@ -90,24 +87,7 @@ public abstract class ModuleMixin {
         Object[] newArgs = new Object[args.length];
         for (int i = 0; i < args.length; i++) {
             if (args[i] instanceof String s) {
-                if (isZhCn()) {
-                    if (s.equals(ChatFormatting.GREEN + "on")) {
-                        newArgs[i] = ChatFormatting.GREEN + "开启";
-                        continue;
-                    } else if (s.equals(ChatFormatting.RED + "off")) {
-                        newArgs[i] = ChatFormatting.RED + "关闭";
-                        continue;
-                    }
-                } else if (isZhTw()) {
-                    if (s.equals(ChatFormatting.GREEN + "on")) {
-                        newArgs[i] = ChatFormatting.GREEN + "開啟";
-                        continue;
-                    } else if (s.equals(ChatFormatting.RED + "off")) {
-                        newArgs[i] = ChatFormatting.RED + "關閉";
-                        continue;
-                    }
-                }
-                newArgs[i] = s;
+                newArgs[i] = translateToggleArg(s);
             } else {
                 newArgs[i] = args[i];
             }

@@ -26,7 +26,7 @@
 ### 特性
 - Meteor本体的语言文件是通过硬编码的方式实现的，即在代码中直接写死了所有文字。
 
-- 本分支有三套翻译方式
+- 本分支有二套翻译方式（mixins直改系统已在`26.2-8`移除）
 
 #### 第一套：Translator 语言文件系统（标准 key-value，优先级最高）
 **文件：** [zh_cn.json](src/main/resources/assets/yalu/lang/zh_cn.json) / [zh_tw.json](src/main/resources/assets/yalu/lang/zh_tw.json) / [en_us.json](src/main/resources/assets/yalu/lang/en_us.json) 
@@ -61,20 +61,6 @@
 - 聊天消息格式字符串：`ChatUtilsMixin` 拦截 `String.format()` 的第一个参数
 - 聊天前缀、通知字符串
 - 按钮文本、状态文本（如 `Not using a proxy`）
-
----
-
-#### 第三套：Mixin 直改系统（修改代码逻辑或参数,其实也算另外一种“硬编码”）
-**核心类：** [JoinMultiplayerScreenTranslationMixin](src/main/java/com/yalu/addon/mixin/JoinMultiplayerScreenTranslationMixin.java) / [ModuleMixin](src/main/java/com/yalu/addon/mixin/ModuleMixin.java) 的 `@Redirect` 等
-
-**原理：** 不依赖字符串匹配，直接在 Mixin 中替换逻辑：
-- `ModuleMixin` → `@Redirect sendToggledMsg(...)` 根据当前语言分流：`zh_cn` 显示「开启/关闭」、`zh_tw` 显示「開啟/關閉」、其他语言保持 `on/off`（带颜色代码的动态拼接字符串，universal 系统无法精确匹配，必须用 Mixin 直改）
-- `JoinMultiplayerScreenTranslationMixin` → 通过 `children()` 遍历找到 `Button` 实例并替换文本
-
-**覆盖范围：**
-- 字符串是动态拼接的（带颜色代码 `§a` 等前缀），无法精确匹配
-- 按钮、状态是运行时动态创建的 `Widget`，没有翻译 key
-- 目标类属于 Meteor 的 Mixin（无法直接 target）
 
 ---
 

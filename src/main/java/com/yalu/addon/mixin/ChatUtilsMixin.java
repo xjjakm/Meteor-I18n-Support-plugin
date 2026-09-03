@@ -6,6 +6,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
+import static com.yalu.addon.TranslateAddon.TRANSLATOR;
+import static com.yalu.addon.TranslateAddon.chatTemplateKey;
+
 @Mixin(value = ChatUtils.class, remap = false)
 public class ChatUtilsMixin {
 
@@ -15,6 +18,10 @@ at = @At(value = "INVOKE", target = "Ljava/lang/String;format(Ljava/lang/String;
 index = 0
 )
 private static String onSendMsgFormatted(String messageContent) {
+// 已映射到标准语言文件（meteori18n.*）的聊天模板优先走标准语言文件翻译；
+// 其余仍走通用翻译表（TextReplacement）。
+String key = chatTemplateKey(messageContent);
+if (key != null) return TRANSLATOR.get(key, messageContent);
 return TextReplacement.replace(messageContent);
 }
 

@@ -27,7 +27,7 @@
 
 ### Features
 - Meteor's own language files are implemented via hardcoding — all text is written directly in the code.
-- This branch provides three translation systems.
+- This branch provides two translation systems.(The Mixins Direct-Edit System was removed in `26.2-8`)
 
 #### System 1: Translator Language File System (standard key-value, highest priority)
 **Files:** [zh_cn.json](src/main/resources/assets/yalu/lang/zh_cn.json) / [zh_tw.json](src/main/resources/assets/yalu/lang/zh_tw.json) / [en_us.json](src/main/resources/assets/yalu/lang/en_us.json)
@@ -62,20 +62,6 @@
 - Chat message format strings: `ChatUtilsMixin` intercepts the first argument of `String.format()`
 - Chat prefix, notification strings
 - Button text, status text (e.g. `Not using a proxy`)
-
----
-
-#### System 3: Mixin Direct-Edit System (modifies code logic or arguments; effectively another form of "hardcoding")
-**Core classes:** [JoinMultiplayerScreenTranslationMixin](src/main/java/com/yalu/addon/mixin/JoinMultiplayerScreenTranslationMixin.java) / `ModuleMixin`'s `@Redirect`
-
-**How it works:** Instead of relying on string matching, it directly replaces the logic in a Mixin:
-- `ModuleMixin` → `@Redirect sendToggledMsg(...)` branches based on the current language: `zh_cn` shows「开启/关闭」, `zh_tw` shows「開啟/關閉」, other languages keep `on/off` (dynamically concatenated strings with color codes that exact matching cannot handle — must be changed directly via Mixin).
-- `JoinMultiplayerScreenTranslationMixin` → traverses `children()` to find `Button` instances and replace their text.
-
-**Coverage:**
-- Strings that are dynamically concatenated (with color code prefixes like `§a`), which cannot be exactly matched
-- Buttons/status that are `Widget`s dynamically created at runtime, with no translation key
-- Target classes that belong to Meteor's Mixins (cannot be targeted directly)
 
 ---
 

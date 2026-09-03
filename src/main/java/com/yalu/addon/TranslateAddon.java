@@ -18,6 +18,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.minecraft.client.Minecraft;
 import org.slf4j.Logger;
 
+import java.util.Map;
 import java.util.Set;
 
 public class TranslateAddon extends MeteorAddon {
@@ -147,6 +148,38 @@ public class TranslateAddon extends MeteorAddon {
             if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) { hasAsciiLetter = true; break; }
         }
         if (hasAsciiLetter) userTypedTexts.add(text);
+    }
+
+    /**
+     * Meteor 聊天消息模板 → 标准语言文件键（meteori18n.*）的映射。
+     * 例如 Modules.java 绑定快捷键的 info("Bound to (highlight)%s(default).", ...)，
+     * 经 ChatUtilsMixin 用标准语言文件查找对应译文，替代废弃的通用翻译表。
+     * 模板中的 (highlight)/(default) 是 Meteor 的格式化标记，译文需原样保留。
+     */
+    private static final Map<String, String> CHAT_TEMPLATE_KEYS = Map.of(
+        "Bound to (highlight)%s(default).", "meteori18n.bound-to"
+    );
+
+    /** 返回聊天模板对应的标准语言文件键；未配置时返回 null。 */
+    public static String chatTemplateKey(String template) {
+        return CHAT_TEMPLATE_KEYS.get(template);
+    }
+
+    /**
+     * 直接绘制到屏幕（原版 GuiGraphics.text）的文本模板 → 标准语言文件键（meteori18n.*）。
+     * 例如多人游戏界面的 "Logged in as " / "Using proxy " / "Not using a proxy"（Meteor 的
+     * JoinMultiplayerScreenMixin 绘制），经 GuiGraphicsExtractorMixin 从标准语言文件取译文，
+     * 替代废弃的通用翻译表。
+     */
+    private static final Map<String, String> GUI_TEXT_KEYS = Map.of(
+        "Logged in as ", "meteori18n.logged-in-as",
+        "Using proxy ", "meteori18n.using-proxy",
+        "Not using a proxy", "meteori18n.not-using-proxy"
+    );
+
+    /** 返回屏幕文本模板对应的标准语言文件键；未配置时返回 null。 */
+    public static String guiTextKey(String template) {
+        return GUI_TEXT_KEYS.get(template);
     }
 
     /**
