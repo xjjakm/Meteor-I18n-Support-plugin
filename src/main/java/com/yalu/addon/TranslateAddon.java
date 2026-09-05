@@ -4,7 +4,9 @@ import com.mojang.logging.LogUtils;
 import com.yalu.addon.commands.MeteorI18nCommand;
 import com.yalu.addon.mixin.CategoryAccessor;
 import com.yalu.addon.modules.AboutThisPlugin;
-import com.yalu.addon.util.*;
+import com.yalu.addon.util.LanguageRefresh;
+import com.yalu.addon.util.NameCache;
+import com.yalu.addon.util.TransUtil;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
@@ -19,7 +21,6 @@ import net.minecraft.client.Minecraft;
 import org.slf4j.Logger;
 
 import java.util.Map;
-import java.util.Set;
 
 public class TranslateAddon extends MeteorAddon {
     public static final Logger LOG = LogUtils.getLogger();
@@ -31,11 +32,6 @@ public class TranslateAddon extends MeteorAddon {
     @Override
     public void onInitialize() {
         LOG.info("Initializing Meteor I18n Support Addon");
-
-        // Load universal text replacement table early so that static strings
-        // created during Meteor's PostInit (e.g. ChatUtils prefix) can be translated.
-        UniversalLangLoader.reload();
-        TextReplacement.setEnabled(true);
 
         // 启动时删除旧的 lang.json，让缺失翻译键从本次启动重新干净收集，
         // 避免历史遗留的无意义键（按键名、玩家名等）残留。
@@ -63,10 +59,6 @@ public class TranslateAddon extends MeteorAddon {
         // 使用 Fabric Command API 挂载 /meteori18n 导出命令
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, _registryAccess) ->
             dispatcher.register(MeteorI18nCommand.build()));
-
-        // Always dump collected unknown text when the client stops, even if
-        // module deactivate is not reliably called during shutdown.
-        Runtime.getRuntime().addShutdownHook(new Thread(this::dumpUnknownText));
     }
 
     /**
@@ -259,18 +251,6 @@ public class TranslateAddon extends MeteorAddon {
             if (deleted) LOG.info("[MeteorTranslation] 已删除旧的 lang.json");
         } catch (java.io.IOException e) {
             LOG.warn("[MeteorTranslation] 删除旧的 lang.json 失败: {}", e.toString());
-        }
-    }
-
-    private void dumpUnknownText() {
-        Set<String> unknown = TextReplacement.getUnknown();
-        if (unknown.isEmpty()) return;
-
-        String path = UnknownDump.getCurrentPath();
-        LOG.info("Shutdown hook: dumping {} unknown English strings to {}", unknown.size(), path);
-        int wrote = UnknownDump.dump(unknown);
-        if (wrote < 0) {
-            LOG.error("Shutdown hook: failed to dump unknown strings to {}", path);
         }
     }
 

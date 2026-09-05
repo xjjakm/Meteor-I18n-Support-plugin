@@ -101,6 +101,22 @@ public class Translator {
         this.currentLangStrings =
             Collections.unmodifiableMap(currentLangStrings);
         this.loadedLangSignature = signature;
+
+        // 按键前缀分类统计翻译键数量（如 Setting / Module / Gui / meteori18n 等），便于观察各分类规模
+        LOGGER.info("[MeteorTranslation] Translation keys by category: {}", summarizeCategories(currentLangStrings));
+    }
+
+    /** 统计翻译键的顶部分类（第一个 . 之前的前缀）数量。 */
+    private static String summarizeCategories(Map<String, String> strings) {
+        TreeMap<String, Integer> counts = new TreeMap<>();
+        for (String key : strings.keySet()) {
+            int dot = key.indexOf('.');
+            String prefix = dot == -1 ? key : key.substring(0, dot);
+            counts.merge(prefix, 1, Integer::sum);
+        }
+        StringBuilder sb = new StringBuilder();
+        counts.forEach((prefix, count) -> sb.append(prefix).append('=').append(count).append(", "));
+        return !sb.isEmpty() ? sb.substring(0, sb.length() - 2) : "(none)";
     }
 
     private static String langCodeSignature(Iterable<String> langCodes) {

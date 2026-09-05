@@ -1,7 +1,6 @@
 package com.yalu.addon.mixin;
 
 import com.yalu.addon.font_fix.FontFix;
-import com.yalu.addon.util.TextReplacement;
 import meteordevelopment.meteorclient.renderer.MeshBuilder;
 import meteordevelopment.meteorclient.renderer.MeshRenderer;
 import meteordevelopment.meteorclient.renderer.MeteorRenderPipelines;
@@ -26,7 +25,7 @@ public abstract class CustomTextRendererMixin implements TextRenderer {
 
     @Shadow
     @Final
-    private MeshBuilder mesh = new MeshBuilder(MeteorRenderPipelines.UI_TEXT);
+    private MeshBuilder mesh;
 
 
     @Unique
@@ -105,10 +104,9 @@ public abstract class CustomTextRendererMixin implements TextRenderer {
         if (text.isEmpty()) {
             return 0.0;
         } else {
-            String translated = TextReplacement.replace(text);
-            int realLen = Math.min(length, translated.length());
+            int realLen = Math.min(length, text.length());
             FontFix font = this.building ? this.font_fix : this.fonts_fix[0];
-            return (font.getWidth(translated, realLen) + (double) (shadow ? 1 : 0)) * this.scale / 1.5;
+            return (font.getWidth(text, realLen) + (double) (shadow ? 1 : 0)) * this.scale / 1.5;
         }
     }
 
@@ -132,17 +130,15 @@ public abstract class CustomTextRendererMixin implements TextRenderer {
             this.begin(null);
         }
 
-        String translated = TextReplacement.replace(text);
-
         double width;
         if (shadow) {
             int preShadowA = SHADOW_COLOR.a;
             SHADOW_COLOR.a = (int) ((double) color.a / 255.0 * (double) preShadowA);
-            width = this.font_fix.render(this.mesh, translated, x + this.fontScale * this.scale / 1.5, y + this.fontScale * this.scale / 1.5, SHADOW_COLOR, this.scale / 1.5);
-            this.font_fix.render(this.mesh, translated, x, y, color, this.scale / 1.5);
+            width = this.font_fix.render(this.mesh, text, x + this.fontScale * this.scale / 1.5, y + this.fontScale * this.scale / 1.5, SHADOW_COLOR, this.scale / 1.5);
+            this.font_fix.render(this.mesh, text, x, y, color, this.scale / 1.5);
             SHADOW_COLOR.a = preShadowA;
         } else {
-            width = this.font_fix.render(this.mesh, translated, x, y, color, this.scale / 1.5);
+            width = this.font_fix.render(this.mesh, text, x, y, color, this.scale / 1.5);
         }
 
         if (!wasBuilding) {

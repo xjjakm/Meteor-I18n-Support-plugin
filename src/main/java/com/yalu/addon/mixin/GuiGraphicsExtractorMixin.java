@@ -1,6 +1,5 @@
 package com.yalu.addon.mixin;
 
-import com.yalu.addon.util.TextReplacement;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -18,11 +17,11 @@ public abstract class GuiGraphicsExtractorMixin {
         index = 1
     )
     private static String replaceTextString(String str) {
-        // 已映射到标准语言文件（meteori18n.*）的屏幕文本模板优先走标准语言文件翻译；
-        // 其余仍走通用翻译表（TextReplacement）。
+        // 仅对已映射到标准语言文件（meteori18n.*）的屏幕文本模板做翻译；
+        // 其余文本原样保留（通用翻译表已移除）。
         String key = guiTextKey(str);
         if (key != null) return TRANSLATOR.get(key, str);
-        return TextReplacement.replace(str);
+        return str;
     }
 
     @ModifyArg(
@@ -33,6 +32,6 @@ public abstract class GuiGraphicsExtractorMixin {
     private static String replaceTextStringShadow(String str) {
         String key = guiTextKey(str);
         if (key != null) return TRANSLATOR.get(key, str);
-        return TextReplacement.replace(str);
+        return str;
     }
 }

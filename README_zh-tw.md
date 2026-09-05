@@ -16,9 +16,8 @@
 3. 把這個mod加入mods資料夾
 
 ### 注意事項
-- ！！！本插件未進行全版本測試
-- 經過測試 在1.21以下版本未進行適配無法使用
-- ！！！本插件未進行全面的測試，與其他插件一起使用時可能小機率存在衝突，若遊戲崩潰，可以嘗試將本插件刪除
+- ！！！本插件對遊戲版本有較為嚴格的要求
+- ！！！本插件未進行全面的測試，與其他插件一起使用時可能小機率存在衝突，若遊戲崩潰，可以嘗試將本插件刪除，也可以提交問題回報
 - ！！！本插件現已適配 [Catppuccin addon](https://github.com/X-C-0/catppuccin-addon) 和 [Meteor+](https://github.com/MeteorClientPlus/MeteorPlus) 的相關內容，如果遇到這兩個插件一起執行而導致的問題請上報
 - ！！！本插件可以同步支援其他Meteor插件 需要將版本資料夾根目錄lang.json檔案內的內容移動到相應的語言檔案內（asset/.../lang/XX_XX.json）
 - ！！！本插件不會預設適配已經漢化過的Meteor用戶端
@@ -27,9 +26,9 @@
 ### 特性
 - Meteor本體的語言檔案是透過硬編碼的方式實現的，即在程式碼中直接寫死了所有文字。
 
-- 本分支有二套翻譯方式（mixins直改系統已在`26.2-8`移除）
+- 本分支現改回原本的翻譯方式（mixins直改系統已在`26.2-8`移除，通用翻譯表於`26.2-9`移除）
 
-#### 第一套：Translator 語言檔案系統（標準 key-value，優先級最高）
+翻譯方式：Translator 語言檔案系統（標準 key-value）
 **檔案：** [zh_cn.json](src/main/resources/assets/yalu/lang/zh_cn.json) / [zh_tw.json](src/main/resources/assets/yalu/lang/zh_tw.json) / [en_us.json](src/main/resources/assets/yalu/lang/en_us.json) 
 
 **核心類別：** [Translator.java](src/main/java/com/yalu/addon/Translator.java) + 各 Mixin（ModuleMixin、SettingMixin、CategoryMixin、TabMixin 等）
@@ -45,39 +44,10 @@
 
 **多插件前綴支援：** `ModuleMixin` 的 `@Inject onInit` 從 `addon.name` 動態取得插件前綴（如 `Meteor`、`Meteor+`、`Meteor-I18n-Support`），使各插件的模組/設定翻譯能使用各自前綴的 key（`Module.Meteor+.*`、`Module.Meteor-I18n-Support.*` 等）
 
----
-
-#### 第二套：Universal 通用文字替換系統（執行時字串精確比對，一種臨時解決方案，正在逐漸被取代）
-**檔案：** [universal_zh_cn.json](src/main/resources/assets/yalu/lang/universal_zh_cn.json) / [universal_zh_tw.json](src/main/resources/assets/yalu/lang/universal_zh_tw.json) / [universal_en_us.json](src/main/resources/assets/yalu/lang/universal_en_us.json)
-**核心類別：** [UniversalLangLoader.java](src/main/java/com/yalu/addon/util/UniversalLangLoader.java) + [TextReplacement.java](src/main/java/com/yalu/addon/util/TextReplacement.java)
-
-**原理：** 啟動時及切換語言時（`TranslateAddon.onInitialize` / `LanguageManagerMixin` → `UniversalLangLoader.reload()`）根據目前遊戲語言載入對應的 `universal_<lang>.json` 到 `TextReplacement.map`，執行時透過 `@ModifyArg` 攔截方法參數後呼叫 `TextReplacement.replace(str)` 做精確替換。
-
-**依語言載入策略：**
-- `zh_cn` → 載入 `universal_zh_cn.json`
-- `zh_tw` → 載入 `universal_zh_tw.json`，若為空則 fallback 到 `universal_zh_cn.json`
-- `en_us` 及其他語言 → 載入 `universal_en_us.json`（空表，不做任何替換）
-
-**覆蓋範圍（硬編碼字串）：**
-- 聊天訊息格式字串：`ChatUtilsMixin` 攔截 `String.format()` 的第一個參數
-- 聊天前綴、通知字串
-- 按鈕文字、狀態文字（如 `Not using a proxy`）
-
----
-
-**三套系統的選擇順序：**
-1. 有 `key` → 用 **Translator**（寫在 zh_cn.json）
-2. 無 key 但有純文字常數 → 用 **TextReplacement**（寫在 universal_zh_cn.json）
-3. 動態拼接/複雜場景（參數、widget 遍歷） → 寫 **Mixin** 直改
-
----
-
 #### 即時語言切換（無需重啟遊戲）
 **核心類別：** [LanguageManagerMixin.java](src/main/java/com/yalu/addon/mixin/LanguageManagerMixin.java) + [LanguageRefresh.java](src/main/java/com/yalu/addon/util/LanguageRefresh.java) + [NameCache.java](src/main/java/com/yalu/addon/util/NameCache.java) + [SettingAccessor.java](src/main/java/com/yalu/addon/mixin/SettingAccessor.java)
 
-**原理：** `LanguageManagerMixin` 注入 `LanguageManager.setSelected()` 的 TAIL，在玩家切換語言後依序執行：
-1. `UniversalLangLoader.reload()` — 依新語言重新載入 universal 替換表
-2. `LanguageRefresh.applyAll()` — 遍歷所有已註冊的 Module / SettingGroup / Setting / Category / Tab，使用原始英文名作為 key 重新查詢 TRANSLATOR 並更新欄位
+**原理：** `LanguageManagerMixin` 注入 `LanguageManager.setSelected()` 的 TAIL，在玩家切換語言後執行：`LanguageRefresh.applyAll()` — 遍歷所有已註冊的 Module / SettingGroup / Setting / Category / Tab，使用原始英文名作為 key 重新查詢 TRANSLATOR 並更新欄位
 
 此外，`TranslateAddon.onInitialize()` 也會呼叫 `LanguageRefresh.applyAll()`：由於 `TranslateAddon.<clinit>` 中建立 `CATEGORY` 時 MC 尚為 null，部分模組/分類/Tab 的 Mixin.onInit 無法翻譯，需等 MC 就緒後統一補翻譯。
 
@@ -87,8 +57,6 @@
 - Tab — 透過 `NameCache.tab()` 快取原始英文名
 - SettingGroup — 透過 `NameCache.group()` 快取原始英文名
 - Setting — 透過 `SettingAccessor.getName()` Mixin Accessor 讀取 `name` 欄位（未被翻譯的原始英文）
-
-- 現已支援自訂字型中文字渲染
 
 ---
 

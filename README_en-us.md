@@ -17,9 +17,8 @@
 3. Put this mod into the `mods` folder.
 
 ### Notes
-- !!! This addon has not been fully tested across all versions.
-- It has been tested and is NOT compatible with versions below 1.21 (not adapted, cannot be used).
-- !!! This addon has not been thoroughly tested; when used together with other addons there is a small chance of conflicts. If the game crashes, try removing this addon.
+- !!! This addon has fairly strict requirements on the game version.
+- !!! This addon has not been thoroughly tested; when used together with other addons there is a small chance of conflicts. If the game crashes, try removing this addon, or submit a bug report.
 - !!! This addon is now compatible with [Catppuccin addon](https://github.com/X-C-0/catppuccin-addon) and [Meteor+](https://github.com/MeteorClientPlus/MeteorPlus). If you encounter issues caused by running together with these two addons, please report them.
 - !!! This addon can also support other Meteor addons: move the content of the `lang.json` file at the root of the version folder into the corresponding language file (`assets/.../lang/XX_XX.json`).
 - !!! This addon does not adapt to already-localized Meteor clients by default.
@@ -27,9 +26,10 @@
 
 ### Features
 - Meteor's own language files are implemented via hardcoding — all text is written directly in the code.
-- This branch provides two translation systems.(The Mixins Direct-Edit System was removed in `26.2-8`)
 
-#### System 1: Translator Language File System (standard key-value, highest priority)
+- This branch now uses the original translation method again (the Mixins Direct-Edit System was removed in `26.2-8`; the Universal Text Replacement Table was removed in `26.2-9`).
+
+Translation method: Translator language file system (standard key-value)
 **Files:** [zh_cn.json](src/main/resources/assets/yalu/lang/zh_cn.json) / [zh_tw.json](src/main/resources/assets/yalu/lang/zh_tw.json) / [en_us.json](src/main/resources/assets/yalu/lang/en_us.json)
 
 **Core classes:** [Translator.java](src/main/java/com/yalu/addon/Translator.java) + various Mixins (ModuleMixin, SettingMixin, CategoryMixin, TabMixin, etc.)
@@ -45,39 +45,10 @@
 
 **Multi-addon prefix support:** `ModuleMixin`'s `@Inject onInit` dynamically picks up the addon prefix from `addon.name` (e.g. `Meteor`, `Meteor+`, `Meteor-I18n-Support`), so each addon's module/setting translations can use its own prefixed keys (`Module.Meteor+.*`, `Module.Meteor-I18n-Support.*`, etc.)
 
----
-
-#### System 2: Universal Text Replacement System (runtime exact string matching,A temporary solution that is gradually being phased out)
-**Files:** [universal_zh_cn.json](src/main/resources/assets/yalu/lang/universal_zh_cn.json) / [universal_zh_tw.json](src/main/resources/assets/yalu/lang/universal_zh_tw.json) / [universal_en_us.json](src/main/resources/assets/yalu/lang/universal_en_us.json)
-**Core classes:** [UniversalLangLoader.java](src/main/java/com/yalu/addon/util/UniversalLangLoader.java) + [TextReplacement.java](src/main/java/com/yalu/addon/util/TextReplacement.java)
-
-**How it works:** On startup and on language switch (`TranslateAddon.onInitialize` / `LanguageManagerMixin` → `UniversalLangLoader.reload()`), the corresponding `universal_<lang>.json` is loaded into `TextReplacement.map` based on the current game language. At runtime, `@ModifyArg` intercepts method arguments and calls `TextReplacement.replace(str)` to do the exact replacement.
-
-**Per-language loading strategy:**
-- `zh_cn` → loads `universal_zh_cn.json`
-- `zh_tw` → loads `universal_zh_tw.json`, falling back to `universal_zh_cn.json` if empty
-- `en_us` and other languages → loads `universal_en_us.json` (an empty table, does no replacement)
-
-**Coverage (hardcoded strings):**
-- Chat message format strings: `ChatUtilsMixin` intercepts the first argument of `String.format()`
-- Chat prefix, notification strings
-- Button text, status text (e.g. `Not using a proxy`)
-
----
-
-**Order of selection among the three systems:**
-1. Has a `key` → use the **Translator** (write it in zh_cn.json)
-2. No key but a plain text constant → use **TextReplacement** (write it in universal_zh_cn.json)
-3. Dynamically concatenated / complex cases (parameters, widget traversal) → write a **Mixin** direct edit
-
----
-
 #### Real-time Language Switching (no game restart needed)
 **Core classes:** [LanguageManagerMixin.java](src/main/java/com/yalu/addon/mixin/LanguageManagerMixin.java) + [LanguageRefresh.java](src/main/java/com/yalu/addon/util/LanguageRefresh.java) + [NameCache.java](src/main/java/com/yalu/addon/util/NameCache.java) + [SettingAccessor.java](src/main/java/com/yalu/addon/mixin/SettingAccessor.java)
 
-**How it works:** `LanguageManagerMixin` injects at the TAIL of `LanguageManager.setSelected()`, and after the player switches language it runs, in order:
-1. `UniversalLangLoader.reload()` — reloads the universal replacement table for the new language
-2. `LanguageRefresh.applyAll()` — iterates over all registered Module / SettingGroup / Setting / Category / Tab, re-queries the TRANSLATOR using the original English names as keys, and updates the fields
+**How it works:** `LanguageManagerMixin` injects at the TAIL of `LanguageManager.setSelected()`; after the player switches language it runs `LanguageRefresh.applyAll()` — iterating over all registered Module / SettingGroup / Setting / Category / Tab, re-querying the TRANSLATOR using the original English names as keys, and updating the fields
 
 In addition, `TranslateAddon.onInitialize()` also calls `LanguageRefresh.applyAll()`: because when `CATEGORY` is created in `TranslateAddon.<clinit>` the MC instance is still null, some modules/categories/tabs cannot be translated in their Mixin.onInit, so they need a unified re-translation once the MC instance is ready.
 
@@ -87,8 +58,6 @@ In addition, `TranslateAddon.onInitialize()` also calls `LanguageRefresh.applyAl
 - Tab — caches the original English name via `NameCache.tab()`
 - SettingGroup — caches the original English name via `NameCache.group()`
 - Setting — reads the `name` field via the `SettingAccessor.getName()` Mixin Accessor (the untranslated original English)
-
-- Now supports Chinese text rendering with custom fonts.
 
 ---
 

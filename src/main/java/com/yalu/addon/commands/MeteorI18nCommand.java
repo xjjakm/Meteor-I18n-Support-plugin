@@ -3,7 +3,6 @@ package com.yalu.addon.commands;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.yalu.addon.util.JsonDump;
 import com.yalu.addon.util.LanguageRefresh;
-import com.yalu.addon.util.UniversalLangLoader;
 import com.yalu.addon.util.trans_engine.TransEngineNew;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.gui.WidgetScreen;
@@ -53,7 +52,6 @@ public class MeteorI18nCommand {
     private static void reload() {
         try {
             // 与语言切换（LanguageManagerMixin）完全一致的重载流程
-            UniversalLangLoader.reload();               // 重载 universal 文本替换表
             ChatUtils.init();                           // 重建聊天前缀（ChatUtils 只在启动时初始化一次）
             LanguageRefresh.applyAll(true);              // 强制重载标准语言文件 + 重译模块/设置/分类/Tab/独立 Settings
             if (MeteorClient.mc.gui.screen() instanceof WidgetScreen widgetScreen) {
