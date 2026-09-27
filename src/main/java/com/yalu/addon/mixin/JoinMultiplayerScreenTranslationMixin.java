@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Set;
 
-import static com.yalu.addon.TranslateAddon.gui;
+import static com.yalu.addon.TranslateAddon.mixinButton;
 
 @Mixin(value = JoinMultiplayerScreen.class, priority = 1100)
 public abstract class JoinMultiplayerScreenTranslationMixin extends Screen {
@@ -36,7 +36,7 @@ public abstract class JoinMultiplayerScreenTranslationMixin extends Screen {
             if (child instanceof Button button) {
                 String text = button.getMessage().getString();
                 if (!METEOR_BUTTONS.contains(text)) continue;
-                String translated = gui(text);
+                String translated = mixinButton(text);
                 if (!text.equals(translated)) {
                     button.setMessage(Component.literal(translated));
                 }

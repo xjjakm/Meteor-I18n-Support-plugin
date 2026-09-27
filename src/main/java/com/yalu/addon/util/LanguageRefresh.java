@@ -34,13 +34,13 @@ public final class LanguageRefresh {
     /** @param forceTranslatorReload 强制重载 Translator 标准语言文件，绕过幂等去重（手动 reload 用） */
     public static void applyAll(boolean forceTranslatorReload) {
         try {
-            if (MC == null || MC.getResourceManager() == null) return;
+            if (getMC() == null || getMC().getResourceManager() == null) return;
 
             // 1. 重新加载 Translator（标准语言文件 zh_cn.json / en_us.json 等）
             if (forceTranslatorReload) {
-                TRANSLATOR.forceReload(MC.getResourceManager());
+                TRANSLATOR.forceReload(getMC().getResourceManager());
             } else {
-                TRANSLATOR.reload(MC.getResourceManager());
+                TRANSLATOR.reload(getMC().getResourceManager());
             }
 
             int modulesDone = 0, settingsDone = 0, groupsDone = 0, categoriesDone = 0, tabsDone = 0;
@@ -191,7 +191,7 @@ public final class LanguageRefresh {
      * 这里通过设置的数据模型静态枚举（而非等待界面渲染——渲染只发生在打开界面时）：
      * - EnumSetting：遍历全部枚举常量，选项文本即 value.toString()；
      * - ProvidedStringSetting：遍历 supplier 提供的候选字符串。
-     * 统一走 gui()，与 WMeteorDropdown 渲染路径生成的键完全一致（Gui.Meteor.{baseFormat}），
+     * 统一走 dropdown()，与 WMeteorDropdown 渲染路径生成的键完全一致（dropdown.{baseFormat}），
      * 因此启动时即可把这些缺失键写入 lang.json。
      */
     private static void recordDropdownValues(Setting<?> setting) {
@@ -200,7 +200,7 @@ public final class LanguageRefresh {
                 Object current = enumSetting.get();
                 if (current instanceof Enum<?> e) {
                     for (Object constant : e.getDeclaringClass().getEnumConstants()) {
-                        if (constant != null) gui(constant.toString());
+                        if (constant != null) dropdown(constant.toString());
                     }
                 }
             } else if (setting instanceof ProvidedStringSetting provided) {
@@ -208,7 +208,7 @@ public final class LanguageRefresh {
                     String[] options = provided.supplier.get();
                     if (options != null) {
                         for (String option : options) {
-                            if (option != null) gui(option);
+                            if (option != null) dropdown(option);
                         }
                     }
                 }

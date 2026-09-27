@@ -45,6 +45,18 @@ Translation method: Translator language file system (standard key-value)
 
 **Multi-addon prefix support:** `ModuleMixin`'s `@Inject onInit` dynamically picks up the addon prefix from `addon.name` (e.g. `Meteor`, `Meteor+`, `Meteor-I18n-Support`), so each addon's module/setting translations can use its own prefixed keys (`Module.Meteor+.*`, `Module.Meteor-I18n-Support.*`, etc.)
 
+**GUI rendering-layer coverage (key namespaces by widget type):**
+- Generic GUI text: labels / section titles / placeholders / screen-drawn text (`Gui.Meteor.*`, e.g. `(Microsoft)`)
+- Meteor GUI buttons: `WButton` / `WConfirmedButton` translated at render time (`Button.Meteor.*`, e.g. Save)
+- Dropdown options: both the Meteor theme and the Catppuccin theme implementations are covered (`Dropdown.Meteor.*`, e.g. LowestDistance)
+- Vanilla-style injected buttons: Accounts/Proxies on the multiplayer screen, Reconnect/Auto Reconnect on the disconnect screen, Copy/Paste in books (`mixinButton.Meteor.*`)
+- Addon's own messages: command output and chat prefix (`meteori18n.*`)
+- Dynamic templates: numbered text is translated via templates without generating extra keys (e.g. `(N selected)`, `Reconnect (2.3)`)
+
+**Filtering (never translated/recorded into language files):** third-party vanilla-style buttons (e.g. ViaFabricPlus), vanilla translatable text, real-time text box input, account usernames, keybind names (`RCONTROL`, etc.)
+
+**Missing-key auto recording:** untranslated keys encountered at runtime are appended (deduplicated) to `lang.json` in the run directory; all dropdown candidate values are also statically enumerated and recorded at startup; the `Translator` startup log prints per-group key counts (`total=N [Button=..., Dropdown=..., ...]`)
+
 #### Real-time Language Switching (no game restart needed)
 **Core classes:** [LanguageManagerMixin.java](src/main/java/com/yalu/addon/mixin/LanguageManagerMixin.java) + [LanguageRefresh.java](src/main/java/com/yalu/addon/util/LanguageRefresh.java) + [NameCache.java](src/main/java/com/yalu/addon/util/NameCache.java) + [SettingAccessor.java](src/main/java/com/yalu/addon/mixin/SettingAccessor.java)
 

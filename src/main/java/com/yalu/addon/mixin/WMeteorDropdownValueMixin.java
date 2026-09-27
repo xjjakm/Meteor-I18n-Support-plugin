@@ -4,7 +4,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import static com.yalu.addon.TranslateAddon.gui;
+import static com.yalu.addon.TranslateAddon.dropdown;
 
 /**
 * Translate enum/object values rendered inside dropdown widgets.
@@ -18,6 +18,6 @@ method = "onRender(Lmeteordevelopment/meteorclient/gui/renderer/GuiRenderer;DDD)
 at = @At(value = "INVOKE", target = "Ljava/lang/Object;toString()Ljava/lang/String;")
 )
 private String onValueToString(Object value) {
-return gui(value.toString());
+return dropdown(value.toString());
 }
 }

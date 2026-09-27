@@ -11,8 +11,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static com.yalu.addon.TranslateAddon.MC;
 import static com.yalu.addon.TranslateAddon.TRANSLATOR;
+import static com.yalu.addon.TranslateAddon.getMC;
 
 @Mixin(value = Category.class, remap = false)
 public abstract class CategoryMixin {
@@ -24,8 +24,8 @@ public abstract class CategoryMixin {
     @Inject(method = "<init>*", at = @At("RETURN"))
     public void onInit(CallbackInfo ci) {
         String originalName = NameCache.category((Category) (Object) this);
-        if (MC == null || MC.getResourceManager() == null) return;
-        TRANSLATOR.reload(MC.getResourceManager());
+        if (getMC() == null || getMC().getResourceManager() == null) return;
+        TRANSLATOR.reload(getMC().getResourceManager());
         String key = "Category.Meteor." + TransUtil.baseFormat(originalName);
         String translated = TRANSLATOR.Translate(key, originalName);
         if (!translated.equals(originalName)) {

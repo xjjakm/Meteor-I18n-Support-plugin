@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import static com.yalu.addon.TranslateAddon.gui;
+import static com.yalu.addon.TranslateAddon.button;
 
 /**
  * 渲染时翻译普通按钮文本。
@@ -23,6 +23,6 @@ public class WMeteorButtonMixin {
             target = "Lmeteordevelopment/meteorclient/gui/themes/meteor/widgets/pressable/WMeteorButton;text:Ljava/lang/String;")
     )
     private String onRenderText(WMeteorButton self) {
-        return gui(self.getText());
+        return button(self.getText());
     }
 }

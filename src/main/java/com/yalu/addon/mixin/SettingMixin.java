@@ -11,8 +11,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.function.Consumer;
 
-import static com.yalu.addon.TranslateAddon.MC;
 import static com.yalu.addon.TranslateAddon.TRANSLATOR;
+import static com.yalu.addon.TranslateAddon.getMC;
 
 @Mixin(value = Setting.class,remap = false)
 public class SettingMixin {
@@ -29,8 +29,8 @@ public class SettingMixin {
     public String description;
     @Inject(method = "<init>",at = @At("TAIL"))
     public void init(String name, String description, Object defaultValue, Consumer onChanged, Consumer onModuleActivated, IVisible visible, CallbackInfo ci){
-        if (MC == null || MC.getResourceManager() == null) return;
-        TRANSLATOR.reload(MC.getResourceManager());
+        if (getMC() == null || getMC().getResourceManager() == null) return;
+        TRANSLATOR.reload(getMC().getResourceManager());
 
         String classname = this.getClass().getName();
         for (MeteorAddon addon : AddonManager.ADDONS) {

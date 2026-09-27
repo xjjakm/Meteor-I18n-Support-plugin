@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static com.yalu.addon.TranslateAddon.gui;
+import static com.yalu.addon.TranslateAddon.button;
 
 /**
  * 渲染确认按钮文本（含 confirmText）。
@@ -20,6 +20,6 @@ public class WConfirmedButtonMixin {
 
     @Inject(method = "getText()Ljava/lang/String;", at = @At("RETURN"), cancellable = true)
     private void onGetTextReturn(CallbackInfoReturnable<String> cir) {
-        cir.setReturnValue(gui(cir.getReturnValue()));
+        cir.setReturnValue(button(cir.getReturnValue()));
     }
 }

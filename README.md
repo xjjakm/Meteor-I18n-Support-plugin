@@ -44,6 +44,18 @@
 
 **多插件前缀支持：** `ModuleMixin` 的 `@Inject onInit` 从 `addon.name` 动态获取插件前缀（如 `Meteor`、`Meteor+`、`Meteor-I18n-Support`），使各插件的模块/设置翻译能使用各自前缀的 key（`Module.Meteor+.*`、`Module.Meteor-I18n-Support.*` 等）
 
+**GUI 渲染层覆盖（按控件类型划分键空间）：**
+- 通用 GUI 文本：标签 / 分节标题 / 占位符 / 屏幕绘制文本（`Gui.Meteor.*`，如 `(Microsoft)` → `(正版)`）
+- Meteor GUI 按钮：`WButton` / `WConfirmedButton` 渲染期翻译（`Button.Meteor.*`，如 Save → 保存）
+- 下拉框选项：Meteor 主题与 Catppuccin 主题实现均已覆盖（`Dropdown.Meteor.*`，如 LowestDistance → 距离最近）
+- 原版样式注入按钮：多人游戏界面的 账号/代理、断线界面的 重新连接/自动重连、书本的 Copy/Paste（`mixinButton.Meteor.*`）
+- 插件自身消息：命令输出与聊天前缀（`meteori18n.*`）
+- 动态模板：含数字的文本按模板翻译，不生成多余键（如 `(N selected)` → `（已选 N 项）`、`Reconnect (2.3)`）
+
+**过滤保护（不会被翻译/记录到语言文件）：** 第三方 mod 的原版样式按钮（如 ViaFabricPlus）、原版 translatable 文本、输入框实时输入、账号用户名、按键名（`RCONTROL` 等）
+
+**缺失键自动记录：** 运行时遇到的未翻译键会自动去重追加到运行目录的 `lang.json`；启动时还会静态枚举所有下拉框候选值一并记录；`Translator` 启动日志输出分组键数统计（`total=N [Button=..., Dropdown=..., ...]`）
+
 #### 实时语言切换（无需重启游戏）
 **核心类：** [LanguageManagerMixin.java](src/main/java/com/yalu/addon/mixin/LanguageManagerMixin.java) + [LanguageRefresh.java](src/main/java/com/yalu/addon/util/LanguageRefresh.java) + [NameCache.java](src/main/java/com/yalu/addon/util/NameCache.java) + [SettingAccessor.java](src/main/java/com/yalu/addon/mixin/SettingAccessor.java)
 

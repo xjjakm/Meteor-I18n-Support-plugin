@@ -102,21 +102,40 @@ public class Translator {
             Collections.unmodifiableMap(currentLangStrings);
         this.loadedLangSignature = signature;
 
-        // 按键前缀分类统计翻译键数量（如 Setting / Module / Gui / meteori18n 等），便于观察各分类规模
+        // 按键前缀分类统计翻译键数量（Button / Category / Dropdown / Gui / Module / Setting / Tab / mixinButton 等），便于观察各分类规模
         LOGGER.info("[MeteorTranslation] Translation keys by category: {}", summarizeCategories(currentLangStrings));
     }
 
-    /** 统计翻译键的顶部分类（第一个 . 之前的前缀）数量。 */
+    /** 语言文件的固定分组顺序（与资源文件组序保持一致），未列出的前缀按字母序附在最后。 */
+    private static final List<String> CATEGORY_ORDER = List.of(
+        "about", "Button", "Category", "Dropdown", "Gui", "meteori18n", "modmenu", "Module", "Setting", "Tab", "mixinButton");
+
+    /** 统计翻译键的顶部分组（第一个 . 之前的前缀）数量，按语言文件组序输出，末尾附总数。 */
     private static String summarizeCategories(Map<String, String> strings) {
-        TreeMap<String, Integer> counts = new TreeMap<>();
+        Map<String, Integer> counts = new HashMap<>();
         for (String key : strings.keySet()) {
             int dot = key.indexOf('.');
             String prefix = dot == -1 ? key : key.substring(0, dot);
             counts.merge(prefix, 1, Integer::sum);
         }
-        StringBuilder sb = new StringBuilder();
-        counts.forEach((prefix, count) -> sb.append(prefix).append('=').append(count).append(", "));
-        return !sb.isEmpty() ? sb.substring(0, sb.length() - 2) : "(none)";
+
+        List<String> prefixes = new ArrayList<>(counts.keySet());
+        prefixes.sort((a, b) -> {
+            int ia = CATEGORY_ORDER.indexOf(a), ib = CATEGORY_ORDER.indexOf(b);
+            if (ia < 0) ia = CATEGORY_ORDER.size();
+            if (ib < 0) ib = CATEGORY_ORDER.size();
+            int c = Integer.compare(ia, ib);
+            return c != 0 ? c : a.compareTo(b);
+        });
+
+        StringBuilder sb = new StringBuilder("total=").append(strings.size()).append(" [");
+        for (int i = 0; i < prefixes.size(); i++) {
+            String p = prefixes.get(i);
+            if (i > 0) sb.append(", ");
+            sb.append(p).append('=').append(counts.get(p));
+        }
+        sb.append(']');
+        return sb.toString();
     }
 
     private static String langCodeSignature(Iterable<String> langCodes) {

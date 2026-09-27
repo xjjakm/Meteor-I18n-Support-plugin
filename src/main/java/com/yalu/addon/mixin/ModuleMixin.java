@@ -14,8 +14,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static com.yalu.addon.TranslateAddon.MC;
 import static com.yalu.addon.TranslateAddon.TRANSLATOR;
+import static com.yalu.addon.TranslateAddon.getMC;
 
 @Mixin(value = Module.class,remap = false,priority = 999)
 public abstract class ModuleMixin {
@@ -44,8 +44,8 @@ public abstract class ModuleMixin {
                 NameCache.group(group);
             }
         }
-        if (MC == null || MC.getResourceManager() == null) return;
-        TRANSLATOR.reload(MC.getResourceManager());
+        if (getMC() == null || getMC().getResourceManager() == null) return;
+        TRANSLATOR.reload(getMC().getResourceManager());
         String PackageName = this.addon.name.replace(" ", "-");
         if (PackageName.equals("Meteor-Client")){
             PackageName = "Meteor";
@@ -84,6 +84,9 @@ public abstract class ModuleMixin {
 
     @Redirect(method = "sendToggledMsg", at = @At(value = "INVOKE", target = "Lmeteordevelopment/meteorclient/utils/player/ChatUtils;sendMsg(ILnet/minecraft/ChatFormatting;Ljava/lang/String;[Ljava/lang/Object;)V"))
     private void redirectToggledMsg(int id, ChatFormatting color, String message, Object... args) {
+        // 翻译模板串里的静态英文词（message, 如 "Toggled (highlight)%s(default) %s(default)." 中的 "Toggled"）
+        String translatedMessage = translateToggleTemplate(message);
+
         Object[] newArgs = new Object[args.length];
         for (int i = 0; i < args.length; i++) {
             if (args[i] instanceof String s) {
@@ -92,6 +95,16 @@ public abstract class ModuleMixin {
                 newArgs[i] = args[i];
             }
         }
-        ChatUtils.sendMsg(id, color, message, newArgs);
+        ChatUtils.sendMsg(id, color, translatedMessage, newArgs);
+    }
+
+    /** 翻译模块切换消息模板，保留 Meteor 的 (highlight)/(default) 格式化标记和 %s 占位符。 */
+    private static String translateToggleTemplate(String message) {
+        if (message == null) return null;
+        if ("Toggled (highlight)%s(default) %s(default).".equals(message)) {
+            String tpl = TRANSLATOR.get("meteori18n.toggled", null);
+            if (tpl != null) return tpl;
+        }
+        return message;
     }
 }

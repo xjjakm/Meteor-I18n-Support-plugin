@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
-import static com.yalu.addon.TranslateAddon.gui;
+import static com.yalu.addon.TranslateAddon.button;
 
 /**
  * 修正按钮宽度：onCalculateSize 用原始英文文本计算 textWidth，
@@ -23,6 +23,6 @@ public class WButtonMixin {
         index = 0
     )
     private String onCalcTextWidth(String text) {
-        return gui(text);
+        return button(text);
     }
 }

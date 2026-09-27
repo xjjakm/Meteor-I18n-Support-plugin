@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import static com.yalu.addon.TranslateAddon.gui;
+import static com.yalu.addon.TranslateAddon.dropdown;
 
 /**
 * Translate the selected value text rendered in the dropdown header
@@ -19,6 +19,6 @@ method = "onRender(Lmeteordevelopment/meteorclient/gui/renderer/GuiRenderer;DDD)
 at = @At(value = "INVOKE", target = "Ljava/lang/Object;toString()Ljava/lang/String;")
 )
 private String onHeaderValueToString(Object value) {
-return gui(value.toString());
+return dropdown(value.toString());
 }
 }
