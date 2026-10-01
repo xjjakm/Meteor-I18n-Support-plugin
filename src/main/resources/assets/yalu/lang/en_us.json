@@ -860,6 +860,7 @@
   "Gui.Meteor.select_entities": "Select entities",
   "Gui.Meteor.select_file": "Select File",
   "Gui.Meteor.select_font": "Select Font",
+  "Gui.Meteor.select_packets": "Select Packets",
   "Gui.Meteor.select_particles": "Select Particles",
   "Gui.Meteor.selected": "SELECTED",
   "Gui.Meteor.sensor": "Sensor",

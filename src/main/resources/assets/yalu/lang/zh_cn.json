@@ -860,6 +860,7 @@
   "Gui.Meteor.select_entities": "选择实体",
   "Gui.Meteor.select_file": "选择文件",
   "Gui.Meteor.select_font": "选择字体",
+  "Gui.Meteor.select_packets": "选择数据包",
   "Gui.Meteor.select_particles": "选择粒子",
   "Gui.Meteor.selected": "已选中",
   "Gui.Meteor.sensor": "传感器",
